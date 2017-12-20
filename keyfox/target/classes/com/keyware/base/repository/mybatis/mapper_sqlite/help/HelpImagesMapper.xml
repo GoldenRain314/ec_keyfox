@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.help.HelpImagesMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.help.HelpImages" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.keyware.base.repository.entity.help.HelpImages" extends="BaseResultMap" >
+    <result column="images" property="images" jdbcType="BLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    "id"
+  </sql>
+  <sql id="Blob_Column_List" >
+    "images"
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from HELP_IMAGES
+    where "id" = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from HELP_IMAGES
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.help.HelpImages" >
+    insert into HELP_IMAGES (id, images)
+    values (#{id,jdbcType=VARCHAR}, #{images,jdbcType=BLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.help.HelpImages" >
+    insert into HELP_IMAGES
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        "id",
+      </if>
+      <if test="images != null" >
+        "images",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="images != null" >
+        #{images,jdbcType=BLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.help.HelpImages" >
+    update HELP_IMAGES
+    <set >
+      <if test="images != null" >
+        images = #{images,jdbcType=BLOB},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.keyware.base.repository.entity.help.HelpImages" >
+    update HELP_IMAGES
+    set images = #{images,jdbcType=BLOB}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.user.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.user.User" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="depart_id" property="departId" jdbcType="VARCHAR" />
+    <result column="user_creation_time" property="userCreationTime" jdbcType="VARCHAR" />
+    <result column="user_pwd_modif_time" property="userPwdModifTime" jdbcType="VARCHAR" />
+    <result column="user_status" property="userStatus" jdbcType="DECIMAL" />
+    <result column="user_lock" property="userLock" jdbcType="DECIMAL" />
+    <result column="user_pwd_error" property="userPwdError" jdbcType="DECIMAL" />
+    <result column="user_pwd_error_date" property="userPwdErrorDate" jdbcType="VARCHAR" />
+    <result column="exit_time" jdbcType="VARCHAR" property="exitTime" />
+    <result column="password_old" jdbcType="VARCHAR" property="passwordOld" />
+    <result column="post" property="post" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="office_telephone" property="officeTelephone" jdbcType="VARCHAR" />
+    <result column="user_number" property="userNumber" jdbcType="VARCHAR" />
+    <result column="id_card" property="idCard" jdbcType="VARCHAR" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="DECIMAL" />
+    <result column="home_phone" property="homePhone" jdbcType="VARCHAR" />
+ 	<result column="logout" property="logout" jdbcType="DECIMAL" />
+ 	<result column="init_pwd_time" property="initPwdTime" jdbcType="VARCHAR" />
+ 	<result column="sort" property="sort" jdbcType="VARCHAR" />
+ 	<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+ 	<result column="is_sys" property="isSys" jdbcType="VARCHAR" />
+ 	<result column="logout_time"  property="logoutTime" jdbcType="VARCHAR" />
+ 	<result column="PROJECT_SOURCE"  property="projectSource" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    "USER"."id", 
+    "USER"."user_id", 
+    "USER"."user_name", 
+    "USER"."password", 
+    "USER"."depart_id", 
+    "USER"."user_creation_time", 
+    "USER"."user_pwd_modif_time", 
+    "USER"."user_status", 
+    "USER"."user_lock", 
+    "USER"."user_pwd_error", 
+    "USER"."user_pwd_error_date",
+    "USER"."exit_time","USER"."password_old",
+    "USER"."post", "USER"."email", "USER"."office_telephone", 
+    "USER"."user_number", "USER"."id_card", "USER"."mobile_phone", 
+    "USER"."sex", "USER"."home_phone","USER"."logout","USER"."init_pwd_time","USER"."sort" ,"USER"."logout_time",
+    "USER"."PROJECT_SOURCE"
+  </sql>
+  
+  <select id="selectByUserInfo" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.user.User">
+  	select 
+    "USER"."id", 
+    "USER"."user_id", 
+    "USER"."user_name", 
+    "USER"."password", 
+    "USER"."depart_id", 
+    "USER"."user_creation_time", 
+    "USER"."user_pwd_modif_time", 
+    "USER"."user_status", 
+    "USER"."user_lock", 
+    "USER"."user_pwd_error", 
+    "USER"."user_pwd_error_date",
+    "USER"."exit_time","USER"."password_old",
+     "USER"."post", "USER"."email", "USER"."office_telephone", 
+    "USER"."user_number", "USER"."id_card", "USER"."mobile_phone", 
+    "USER"."sex", "USER"."home_phone","USER"."logout","USER"."init_pwd_time","USER"."sort" ,"USER"."logout_time",
+    "DEPARTMENT"."dept_name"
+     from "K_USER" "USER"
+     
+     left join "DEPARTMENT" on "USER"."depart_id" = "DEPARTMENT"."id"
+     where "USER"."logout" != '1'
+     and "USER".PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+     <if test="flag != null">
+	     and "USER"."user_id" != 'safesecret' 
+	     and "USER"."user_id" != 'safeaudit' 
+	     and "USER"."user_id" != 'admin'
+     </if>
+     <if test="id != null">
+     	and "USER"."id" = #{id,jdbcType=VARCHAR}
+     </if>
+     <if test="userId != null">
+     	and "USER"."user_id" = #{userId,jdbcType=VARCHAR}
+     </if>
+     <if test="isSys != 'sysadmin'">
+     	and "USER"."is_sys" = '0'
+     </if>
+     <if test="userNameForSerch != null">
+     	<!-- and ("user_name" like '%'||#{userNameForSerch,jdbcType=VARCHAR}||'%' or "user_id" like '%'||#{userNameForSerch,jdbcType=VARCHAR}||'%') 
+     	            项目管理，快速搜索，只出还有搜索条件的名称
+     	 -->
+     	 and ("USER"."user_name" like '%'||#{userNameForSerch,jdbcType=VARCHAR}||'%' )
+     </if>
+     <if test="departId != null and departId != ''" >  
+         and "USER"."depart_id"=#{departId,jdbcType=VARCHAR}  
+    </if>
+    <if test="userStatus == null">
+    	and "USER"."user_status" = '0'
+    </if>
+    <if test="userNumber != null and userNumber != ''">
+    	and "USER"."user_number" = #{userNumber,jdbcType=VARCHAR}
+    </if>
+    order by CAST("sort" AS int) asc 
+  </select>
+  
+  
+  <select id="selectBySearch" parameterType="java.lang.String"  resultMap="BaseResultMap"  >
+  	 select 
+    <include refid="Base_Column_List" />
+     from "K_USER" "USER"
+     <!-- where ("user_name" like CONCAT('%',#{userName},'%') or "user_id" like CONCAT('%',#{userId},'%') ) -->
+     where ("user_name" like '%'||#{userName}||'%' or "user_id" like '%'||#{userName}||'%') 
+     and "user_status" = '0'
+     and PROJECT_SOURCE = #{projectSource}
+  </select>
+  
+  <select id="selectByUserNumber" parameterType="java.lang.String" resultMap="BaseResultMap" >
+  	 select 
+    <include refid="Base_Column_List" />
+     from "K_USER" "USER"
+     where "user_number" = #{userNumber,jdbcType=VARCHAR}
+     and PROJECT_SOURCE = #{projectSource}
+  </select>
+  
+  <select id="selectUserCountByDeptId" parameterType="java.lang.String" resultType="java.lang.Integer">
+  	SELECT count(*) from "K_USER" "USER" where "USER"."depart_id"=#{deptId,jdbcType=VARCHAR} and "is_sys" = '0'
+  	and PROJECT_SOURCE = #{projectSource}
+  </select>
+  
+  <select id="getAddRoleUserList" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.user.User">
+  	select 
+    <include refid="Base_Column_List" />,
+    DEPARTMENT."dept_name" deptName
+     from "K_USER" "USER"
+     LEFT JOIN DEPARTMENT ON "USER"."depart_id" = DEPARTMENT."id"
+     where "USER"."id" not in (select "user_id" from USER_ROLE where USER_ROLE."role_id" =  #{roleId,jdbcType=VARCHAR})
+     and ("USER"."user_id" != 'sysadmin' and "USER"."user_id" != 'admin' and "USER"."user_id" != 'safeaudit' and "USER"."user_id" != 'safesecret')
+     <!-- 显示 没有锁定、注销、禁用的用户 -->
+     and "USER"."user_lock" != 1 and "USER"."logout" != 1 and "USER"."user_status" != 1 
+     and "USER".PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+     <if test="roleName != null and roleName != ''" >  
+         and "USER"."user_name" like '%'||#{roleName,jdbcType=VARCHAR}||'%' 
+    </if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+     from "K_USER" "USER"
+    where "id"= #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+     from "K_USER" "USER"
+    where "user_id"= #{userId,jdbcType=VARCHAR}
+    and PROJECT_SOURCE = #{projectSource}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from "K_USER" "USER"
+    where "id" in <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}  
+     </foreach>
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.user.User" >
+    insert into "K_USER"("id", "user_id", "user_name", 
+      "password", "depart_id", "user_creation_time", 
+      "user_pwd_modif_time", "user_status", "user_lock", 
+      "user_pwd_error", "user_pwd_error_date","exit_time","password_old",
+      "post", "email", "office_telephone", "user_number","id_card", "mobile_phone", "sex", "home_phone","logout","init_pwd_time","sort","logout_time",
+      PROJECT_SOURCE, "is_sys")
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{departId,jdbcType=VARCHAR}, #{userCreationTime,jdbcType=VARCHAR}, 
+      #{userPwdModifTime,jdbcType=VARCHAR}, #{userStatus,jdbcType=DECIMAL}, #{userLock,jdbcType=DECIMAL}, 
+      #{userPwdError,jdbcType=DECIMAL}, #{userPwdErrorDate,jdbcType=VARCHAR},#{exitTime,jdbcType=VARCHAR},#{passwordOld,jdbcType=VARCHAR},
+       #{post,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{officeTelephone,jdbcType=VARCHAR}, #{userNumber,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
+      #{mobilePhone,jdbcType=VARCHAR}, #{sex,jdbcType=DECIMAL}, #{homePhone,jdbcType=VARCHAR},
+      #{logout,jdbcType=DECIMAL},#{initPwdTime,jdbcType=VARCHAR},#{sort,jdbcType=VARCHAR},#{logoutTime,jdbcType=VARCHAR},
+      #{projectSource,jdbcType=VARCHAR},#{isSys,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.user.User" >
+    insert into "K_USER" "USER"
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        "id",
+      </if>
+      <if test="userId != null" >
+        "user_id",
+      </if>
+      <if test="userName != null" >
+        "user_name",
+      </if>
+      <if test="password != null" >
+        "password",
+      </if>
+      <if test="departId != null" >
+        "depart_id",
+      </if>
+      <if test="userCreationTime != null" >
+        "user_creation_time",
+      </if>
+      <if test="userPwdModifTime != null" >
+        "user_pwd_modif_time",
+      </if>
+      <if test="userStatus != null" >
+        "user_status",
+      </if>
+      <if test="userLock != null" >
+        "user_lock",
+      </if>
+      <if test="userPwdError != null" >
+        "user_pwd_error",
+      </if>
+      <if test="userPwdErrorDate != null" >
+        "user_pwd_error_date",
+      </if>
+      <if test="logoutTime !=null ">
+      	"logout_time",
+      </if>
+      <if test="projectSource != null">
+      	PROJECT_SOURCE,
+      </if>
+      <if test="isSys != null">
+      	"is_sys"
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="departId != null" >
+        #{departId,jdbcType=VARCHAR},
+      </if>
+      <if test="userCreationTime != null" >
+        #{userCreationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwdModifTime != null" >
+        #{userPwdModifTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null" >
+        #{userStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="userLock != null" >
+        #{userLock,jdbcType=DECIMAL},
+      </if>
+      <if test="userPwdError != null" >
+        #{userPwdError,jdbcType=DECIMAL},
+      </if>
+      <if test="userPwdErrorDate != null" >
+        #{userPwdErrorDate,jdbcType=VARCHAR},
+      </if>
+       <if test="logoutTime !=null ">
+      	#{logoutTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSource != null">
+      	#{projectSource,jdbcType=VARCHAR},
+      </if>
+      <if test="isSys != null">
+      	#{isSys,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.user.User" >
+    update K_USER
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="departId != null" >
+        depart_id = #{departId,jdbcType=VARCHAR},
+      </if>
+      <if test="userCreationTime != null" >
+        user_creation_time = #{userCreationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwdModifTime != null" >
+        user_pwd_modif_time = #{userPwdModifTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null" >
+        user_status = #{userStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="userLock != null" >
+        user_lock = #{userLock,jdbcType=DECIMAL},
+      </if>
+      <if test="userPwdError != null" >
+        user_pwd_error = #{userPwdError,jdbcType=DECIMAL},
+      </if>
+      <if test="userPwdErrorDate != null" >
+        user_pwd_error_date = #{userPwdErrorDate,jdbcType=VARCHAR},
+      </if>
+       <if test="logoutTime !=null ">
+      	logout_time = #{logoutTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.user.User" >
+    update "K_USER"
+    <set>
+   	  <if test="userId!=null">"user_id" = #{userId,jdbcType=VARCHAR},</if>
+      <if test="userName!=null">"user_name" = #{userName,jdbcType=VARCHAR},</if>
+      <if test="password!=null">"password" = #{password,jdbcType=VARCHAR},</if>
+      <if test="departId!=null">"depart_id" = #{departId,jdbcType=VARCHAR},</if>
+      <if test="userCreationTime!=null">"user_creation_time" = #{userCreationTime,jdbcType=VARCHAR},</if>
+      <if test="userPwdModifTime!=null">"user_pwd_modif_time" = #{userPwdModifTime,jdbcType=VARCHAR},</if>
+      <if test="userStatus!=null">"user_status"= #{userStatus,jdbcType=INTEGER},</if>
+      <if test="userLock!=null">"user_lock"= #{userLock,jdbcType=INTEGER},</if>
+      <if test="userPwdError!=null">"user_pwd_error" = #{userPwdError,jdbcType=INTEGER},</if>
+      <if test="userPwdErrorDate!=null">"user_pwd_error_date" = #{userPwdErrorDate,jdbcType=VARCHAR},</if>
+      <if test="exitTime!=null">"exit_time" = #{exitTime,jdbcType=VARCHAR},</if>
+      <if test="passwordOld!=null">"password_old" = #{passwordOld,jdbcType=VARCHAR},</if>
+      <if test="post!=null">"post" = #{post,jdbcType=VARCHAR},</if>
+      <if test="email!=null">"email" = #{email,jdbcType=VARCHAR},</if>
+      <if test="officeTelephone!=null">"office_telephone" = #{officeTelephone,jdbcType=VARCHAR},</if>
+      <if test="userNumber!=null">"user_number" = #{userNumber,jdbcType=VARCHAR},</if>
+      <if test="idCard!=null">"id_card" = #{idCard,jdbcType=VARCHAR},</if>
+      <if test="mobilePhone!=null">"mobile_phone" = #{mobilePhone,jdbcType=VARCHAR},</if>
+      <if test="sex!=null">"sex" = #{sex,jdbcType=DECIMAL},</if>
+      <if test="homePhone!=null">"home_phone" = #{homePhone,jdbcType=VARCHAR},</if>
+      <if test="logout!=null">"logout" = #{logout,jdbcType=DECIMAL},</if>
+      <if test="initPwdTime!=null">"init_pwd_time" = #{initPwdTime,jdbcType=VARCHAR},</if>
+      <if test="sort!=null">"sort" = #{sort,jdbcType=VARCHAR},</if>
+      <if test="logoutTime !=null ">
+      	"logout_time" = #{logoutTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where "id" = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+  <resultMap id="UserExtMap" type="com.keyware.base.repository.entity.user.User"  extends="BaseResultMap">
+  	<collection property="roles"  column="user_id"  ofType="com.keyware.base.repository.entity.Role" >
+  		<id property="roleId" column="role_id"/>
+  		<result property="roleName" column="role_name"/>
+  		<result property="roleCode" column="role_code"/>
+  		<collection property="permissions"  column="role_id"  ofType="com.keyware.base.repository.entity.Permission"  select="com.keyware.base.repository.mybatis.itf.RoleMapper.selectRolePermission" /> 
+  	</collection>
+  </resultMap>
+  
+  <select id="selectUserExtByUserAccount"  parameterType="java.lang.String"  resultMap="UserExtMap">
+  	select 
+		"USER".*,
+		"ROLE"."role_id",
+		"ROLE"."role_name",
+		"ROLE"."role_code"
+	from 
+		"K_USER" "USER"
+	LEFT JOIN "USER_ROLE" ON ("USER"."id"="USER_ROLE"."user_id")
+	LEFT JOIN "ROLE" ON ("USER_ROLE"."role_id" = "ROLE"."role_id")
+	where 
+		"USER"."user_id" = #{userId,jdbcType=VARCHAR}
+	and "USER".PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectUserExtByUserIdForUser"  parameterType="java.lang.String"  resultMap="BaseResultMap">
+  		SELECT 
+		  "USER"."id",
+		  "USER"."user_id",
+		  "USER"."password"
+		FROM
+		  "K_USER" "USER"
+		WHERE "USER"."user_id" = #{userId,jdbcType=VARCHAR}
+		and "USER".PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectUserByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List"></include>
+    from "K_USER" "USER"
+    where "USER"."user_id" = #{userId,jdbcType=VARCHAR}
+    and "USER".PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+   select "id", "user_id", "user_name", 
+      "password", "depart_id", "user_creation_time", 
+      "user_pwd_modif_time", "user_status", "user_lock", 
+      "user_pwd_error", "user_pwd_error_date","exit_time","password_old",
+      "post", "email", "office_telephone", "user_number", "id_card", "mobile_phone", "sex", "home_phone","logout","init_pwd_time","sort"
+    from "K_USER" where "logout" != '1'
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    	<if test="userId != 'sysadmin'">
+    		and "is_sys" = '0'
+    	</if>
+     order by CAST("sort" AS int) asc 
+  </select>
+  <select id="selectLogOutUser" resultMap="BaseResultMap">
+   select "id", "user_id", "user_name", 
+      "password", "depart_id", "user_creation_time", 
+      "user_pwd_modif_time", "user_status", "user_lock", 
+      "user_pwd_error", "user_pwd_error_date","exit_time","password_old",
+      "post", "email", "office_telephone", "user_number", "id_card", "mobile_phone", "sex", "home_phone","logout","init_pwd_time"
+    from "K_USER" where "logout"='1'
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    <if test="userName != null">
+	    and "user_name" like '%'||#{userName}||'%'
+    </if>
+    order by "TO_DATE"("logout_time", 'yyyy-mm-dd hh24:mi:ss') DESC
+  </select>
+  <update id="updateStatus" parameterType="com.keyware.base.repository.entity.user.User">
+    update "K_USER"
+    set "user_status"= #{userStatus,jdbcType=INTEGER} 
+    where "id" = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateLock" parameterType="com.keyware.base.repository.entity.user.User">
+    update "K_USER"
+    set "user_lock"= #{userLock,jdbcType=INTEGER}, 
+    "user_pwd_error" = #{userPwdError,jdbcType=INTEGER},
+    "user_pwd_error_date" = #{userPwdErrorDate,jdbcType=VARCHAR}
+    where "id" = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="unlock" parameterType="com.keyware.base.repository.entity.user.User">
+    update "K_USER"
+    set "user_lock"= '0', 
+    "user_pwd_error" = '0',
+    "user_pwd_error_date" = ''
+    where "id" in
+    <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}  
+     </foreach>
+  </update>
+  <select id="getUserIdName" resultMap="BaseResultMap">
+   select "user_id", "user_name"
+    from "K_USER"
+    where PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+   <update id="updateLogout" parameterType="com.keyware.base.repository.entity.user.User">
+    update "K_USER"
+    set "logout"='1'
+    where "id" in
+    <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}  
+     </foreach>
+  </update>
+   <update id="recovery" parameterType="com.keyware.base.repository.entity.user.User">
+    update "K_USER"
+    set "logout"='0' ,"logout_time" = null
+    where "id" in
+    <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}  
+     </foreach>
+  </update>
+  
+  <update id="updateByPrimaryUserId" parameterType="com.keyware.base.repository.entity.user.User" >
+    update "K_USER"
+    set <if test="userName!=null">"user_name" = #{userName,jdbcType=VARCHAR},</if>
+      <if test="password!=null">"password" = #{password,jdbcType=VARCHAR},</if>
+      <if test="departId!=null">"depart_id" = #{departId,jdbcType=VARCHAR},</if>
+      <if test="userCreationTime!=null">"user_creation_time" = #{userCreationTime,jdbcType=VARCHAR},</if>
+      <if test="userPwdModifTime!=null">"user_pwd_modif_time" = #{userPwdModifTime,jdbcType=VARCHAR},</if>
+      <if test="userStatus!=null">"user_status"= #{userStatus,jdbcType=INTEGER},</if>
+      <if test="userLock!=null">"user_lock"= #{userLock,jdbcType=INTEGER},</if>
+      <if test="userPwdError!=null">"user_pwd_error" = #{userPwdError,jdbcType=INTEGER},</if>
+      <if test="userPwdErrorDate!=null">"user_pwd_error_date" = #{userPwdErrorDate,jdbcType=VARCHAR},</if>
+      <if test="exitTime!=null">"exit_time" = #{exitTime,jdbcType=VARCHAR},</if>
+      <if test="passwordOld!=null">"password_old" = #{passwordOld,jdbcType=VARCHAR},</if>
+      <if test="post!=null">"post" = #{post,jdbcType=VARCHAR},</if>
+      <if test="email!=null">"email" = #{email,jdbcType=VARCHAR},</if>
+      <if test="officeTelephone!=null">"office_telephone" = #{officeTelephone,jdbcType=VARCHAR},</if>
+      <if test="userNumber!=null">"user_number" = #{userNumber,jdbcType=VARCHAR},</if>
+      <if test="idCard!=null">"id_card" = #{idCard,jdbcType=VARCHAR},</if>
+      <if test="mobilePhone!=null">"mobile_phone" = #{mobilePhone,jdbcType=VARCHAR},</if>
+      <if test="sex!=null">"sex" = #{sex,jdbcType=DECIMAL},</if>
+      <if test="homePhone!=null">"home_phone" = #{homePhone,jdbcType=VARCHAR},</if>
+      <if test="logout!=null">"logout" = #{logout,jdbcType=DECIMAL},</if>
+      <if test="initPwdTime!=null">"init_pwd_time" = #{initPwdTime,jdbcType=VARCHAR},</if>
+      <if test="logoutTime !=null ">
+      	"logout_time" = #{logoutTime,jdbcType=VARCHAR},
+      </if>
+      "user_id" = #{userId,jdbcType=VARCHAR}
+    where "user_id" = #{userId,jdbcType=VARCHAR}
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </update>
+  <select id="pwdResetList" resultMap="BaseResultMap">
+   select "id", "user_id", "user_name", 
+      "password", "depart_id", "user_creation_time", 
+      "user_pwd_modif_time", "user_status", "user_lock", 
+      "user_pwd_error", "user_pwd_error_date","exit_time","password_old",
+      "post", "email", "office_telephone", "user_number", "id_card", "mobile_phone", "sex", "home_phone","logout","init_pwd_time"
+    from "K_USER"
+    where "init_pwd_time" is not NULL
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    <if test="userName != null">
+    	and "user_name" like '%'||#{userName}||'%'
+    </if>
+	ORDER BY "init_pwd_time" desc
+  </select>
+  <update id="delPwdResetList" parameterType="com.keyware.base.repository.entity.user.User">
+    update "K_USER"
+    set "init_pwd_time"=''
+    where "id" in
+    <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}  
+     </foreach>
+  </update>
+   <select id="count" resultType="java.lang.Integer">
+   select count(*) from "K_USER" where PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+   
+   <update id="updateSort" parameterType="com.keyware.base.repository.entity.user.User">
+   update "K_USER"
+    set "sort" = #{sort,jdbcType=VARCHAR}
+    where "id"= #{id,jdbcType=VARCHAR}
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </update>
+  
+    <select id="selectDepartUser" resultMap="BaseResultMap">
+   select "id", "user_id", "user_name", 
+      "depart_id"
+    from "K_USER" 
+    where  "user_status" =  '0'
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    <if test="departId != null and departId !=''" >  
+         and "depart_id"=#{departId,jdbcType=VARCHAR}  
+    </if>  
+  </select>
+  <select id="selectAllUser"  resultMap="BaseResultMap">
+  select 
+    	<include refid="Base_Column_List"></include>
+    from "K_USER" "USER"
+    where PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+</mapper>

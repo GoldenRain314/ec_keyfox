@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+">
+	<!-- aliyun config start-->
+	
+	<!-- <bean id="plainCallbackHandler" class="net.spy.memcached.auth.PlainCallbackHandler">
+		<constructor-arg index="0" value="${memcached.aliyun.username}" />
+		<constructor-arg index="1" value="${memcached.aliyun.password}" />
+	</bean>
+
+	<bean id="authDescriptor" class="net.spy.memcached.auth.AuthDescriptor">
+		<constructor-arg index="0">
+			<array>
+				<value>PLAIN</value>
+			</array>
+		</constructor-arg>
+		<constructor-arg index="1" ref="plainCallbackHandler" />
+	</bean>
+
+	<bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+		<property name="servers" value="${memcached.aliyun.server}" />
+		<property name="protocol" value="BINARY" />
+		<property name="authDescriptor" ref="authDescriptor" />
+	</bean> -->
+	<!-- aliyun config end -->
+	<!-- local config start  -->
+	<bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+		<property name="servers" value="${memcached.local.server}" />
+		<property name="protocol" value="BINARY" />
+		<property name="transcoder">
+			<bean class="net.spy.memcached.transcoders.SerializingTranscoder">
+				<property name="compressionThreshold" value="1024" />
+			</bean>
+		</property>
+		<property name="opTimeout" value="1000" />
+		<property name="timeoutExceptionThreshold" value="1998" />
+		<property name="locatorType" value="CONSISTENT" />
+		<property name="failureMode" value="Redistribute" />
+		<property name="useNagleAlgorithm" value="false" />
+	</bean>
+	<!-- local config end -->
+	<!-- 统一配置 -->
+	<bean id="memcachedTemplate" class="memcached.support.MemcachedTemplate">
+		<property name="memcachedClient" ref="memcachedClient" />
+	</bean>
+</beans> 

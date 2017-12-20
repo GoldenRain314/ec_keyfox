@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keyware.base.repository.mybatis.itf.help.AnswerListMapper">
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.help.AnswerList">
+    <id column="a_id" jdbcType="VARCHAR" property="aId" />
+    <result column="a_content" jdbcType="VARCHAR" property="aContent" />
+    <result column="q_id" jdbcType="VARCHAR" property="qId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    a_id, a_content, q_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from HELP_ANSWER_LIST
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </select>
+     <select id="selectByQId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from HELP_ANSWER_LIST
+    where "q_id" = #{qId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from HELP_ANSWER_LIST
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByQid" parameterType="java.lang.String" >
+    delete from HELP_ANSWER_LIST
+    where "q_id" = #{qId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.help.AnswerList">
+    insert into HELP_ANSWER_LIST (a_id, a_content, q_id
+      )
+    values (#{aId,jdbcType=VARCHAR}, #{aContent,jdbcType=VARCHAR}, #{qId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.help.AnswerList">
+    insert into HELP_ANSWER_LIST
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="aId != null">
+        a_id,
+      </if>
+      <if test="aContent != null">
+        a_content,
+      </if>
+      <if test="qId != null">
+        q_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="aId != null">
+        #{aId,jdbcType=VARCHAR},
+      </if>
+      <if test="aContent != null">
+        #{aContent,jdbcType=VARCHAR},
+      </if>
+      <if test="qId != null">
+        #{qId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.help.AnswerList">
+    update HELP_ANSWER_LIST
+    <set>
+      <if test="aContent != null">
+        a_content = #{aContent,jdbcType=VARCHAR},
+      </if>
+      <if test="qId != null">
+        q_id = #{qId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.help.AnswerList">
+    update HELP_ANSWER_LIST
+    set a_content = #{aContent,jdbcType=VARCHAR},
+      q_id = #{qId,jdbcType=VARCHAR}
+    where a_id = #{aId,jdbcType=VARCHAR}
+  </update>
+</mapper>

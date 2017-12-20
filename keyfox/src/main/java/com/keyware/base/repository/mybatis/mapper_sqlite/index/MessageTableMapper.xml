@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keyware.base.repository.mybatis.itf.index.MessageTableMapper">
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.index.MessageTable">
+    <id column="message_id" jdbcType="VARCHAR" property="messageId" />
+    <result column="parent_model_name" jdbcType="VARCHAR" property="parentModelName" />
+    <result column="message_url" jdbcType="VARCHAR" property="messageUrl" />
+    <result column="receiver_id" jdbcType="VARCHAR" property="receiverId" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="message_status" jdbcType="VARCHAR" property="messageStatus" />
+    <result column="hande_time" jdbcType="VARCHAR" property="handeTime" />
+    <result column="project_id" jdbcType="VARCHAR" property="projectId" />
+    <result column="message_content" jdbcType="VARCHAR" property="messageContent" />
+    <result column="read_hande" jdbcType="VARCHAR" property="readHande" />
+    <result column="PROJECT_SOURCE" jdbcType="VARCHAR" property="projectSource" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    message_id, parent_model_name, message_url, receiver_id, create_time, message_status, 
+    hande_time, project_id, message_content, read_hande, PROJECT_SOURCE
+  </sql>
+  <select id="selectByInfo" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.index.MessageTable">
+  	 select 
+    <include refid="Base_Column_List" />
+     <!-- from(
+     	select 
+    	<include refid="Base_Column_List" />
+    	 ,ROW_NUMBER() OVER (PARTITION BY "message_content" order by "message_id") "RN"
+    	
+        ) -->
+     from MESSAGE_TABLE
+    where<!--  1=1 and --> PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    <if test="messageId != null" >
+       and "message_id" = #{messageId,jdbcType=VARCHAR}
+      </if>
+      <if test="parentModelName != null" >
+       and "parent_model_name" = #{parentModelName,jdbcType=VARCHAR}
+      </if>
+      <if test="messageUrl != null" >
+       and	"message_url" = #{messageUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="receiverId != null" >
+        and "receiver_id" = #{receiverId,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and "create_time" = #{createTime,jdbcType=VARCHAR}
+      </if>
+      <if test="messageStatus != null" >
+        and "message_status" = #{messageStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="handeTime != null" >
+        and "hande_time" = #{handeTime,jdbcType=VARCHAR}
+      </if>
+      <if test="projectId != null" >
+        and "project_id" = #{projectId,jdbcType=VARCHAR}
+      </if>
+      <if test="messageContent != null">
+      	and "message_content" = #{messageContent,jdbcType=VARCHAR}
+      </if>
+      <if test="readHande != null">
+      	and "read_hande" = #{readHande,jdbcType=VARCHAR}
+      </if>
+       <!--  and "RN" = 1  -->
+      order by 
+		"message_status" ASC,
+		"create_time" DESC
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from MESSAGE_TABLE
+    where "message_id" = #{messageId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from MESSAGE_TABLE
+    where "message_id" = #{messageId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.index.MessageTable" >
+    insert into MESSAGE_TABLE (message_id, parent_model_name, message_url, 
+      receiver_id, create_time, message_status, 
+      hande_time, project_id,PROJECT_SOURCE)
+    values (#{messageId,jdbcType=VARCHAR}, #{parentModelName,jdbcType=VARCHAR}, #{messageUrl,jdbcType=VARCHAR}, 
+      #{receiverId,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{messageStatus,jdbcType=VARCHAR}, 
+      #{handeTime,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR},#{projectSource,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.index.MessageTable" >
+    insert into MESSAGE_TABLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="messageId != null" >
+        "message_id",
+      </if>
+      <if test="parentModelName != null" >
+        "parent_model_name",
+      </if>
+      <if test="messageUrl != null" >
+       	"message_url",
+      </if>
+      <if test="receiverId != null" >
+        "receiver_id",
+      </if>
+      <if test="createTime != null" >
+        "create_time",
+      </if>
+      <if test="messageStatus != null" >
+        "message_status",
+      </if>
+      <if test="handeTime != null" >
+        "hande_time",
+      </if>
+      <if test="projectId != null" >
+        "project_id",
+      </if>
+      <if test="messageContent != null">
+      	"message_content",
+      </if>
+      <if test="readHande != null">
+      	"read_hande",
+      </if>
+      <if test="projectSource != null">
+      	PROJECT_SOURCE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="messageId != null" >
+        #{messageId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentModelName != null" >
+        #{parentModelName,jdbcType=VARCHAR},
+      </if>
+      <if test="messageUrl != null" >
+        #{messageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverId != null" >
+        #{receiverId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="messageStatus != null" >
+        #{messageStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="handeTime != null" >
+        #{handeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null">
+      	#{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="readHande != null">
+      	#{readHande,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSource != null">
+      	#{projectSource,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.index.MessageTable" >
+    update MESSAGE_TABLE
+    <set >
+      <if test="parentModelName != null" >
+        "parent_model_name" = #{parentModelName,jdbcType=VARCHAR},
+      </if>
+      <if test="messageUrl != null" >
+        "message_url" = #{messageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverId != null" >
+        "receiver_id" = #{receiverId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        "create_time" = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="messageStatus != null" >
+        "message_status" = #{messageStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="handeTime != null" >
+        "hande_time" = #{handeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        "project_id" = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="messageContent != null">
+      	"message_content" = #{messageContent,jdbcType=VARCHAR},
+      </if>
+      <if test="readHande != null">
+      	"read_hande" = #{readHande,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where "message_id" = #{messageId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.index.MessageTable" >
+    update MESSAGE_TABLE
+    set parent_model_name = #{parentModelName,jdbcType=VARCHAR},
+      message_url = #{messageUrl,jdbcType=VARCHAR},
+      receiver_id = #{receiverId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      message_status = #{messageStatus,jdbcType=VARCHAR},
+      hande_time = #{handeTime,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=VARCHAR}
+    where message_id = #{messageId,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteByProjectId" parameterType="java.lang.String" >
+    delete from MESSAGE_TABLE
+    where "project_id" = #{projectId,jdbcType=VARCHAR}
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </delete>
+</mapper>

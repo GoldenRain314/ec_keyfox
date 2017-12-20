@@ -1,0 +1,138 @@
+@charset "utf-8";
+/* CSS Document */
+@media screen and (max-width:1577px) {
+.nav ul li a{
+	padding:0 21px 0 49px;
+	background-position: 24px center;
+}	
+.xmulist_quzz_img{
+	margin:0;
+}
+
+
+}
+
+@media screen and (max-width:1440px) {
+.nav ul li a{
+	padding:0 13px 0 32px;
+	background-position: 7px center;
+}	
+
+
+
+}
+
+@media screen and (max-width:1380px) {
+
+
+/* .task_cont{    // 文档编写--任务分配--表格宽度设置
+	width:990px;
+} */
+
+.xmulist_quzz_img2{
+	margin:0 0 0 23px;
+	padding:80px 0 0 80px;
+}
+.xmulist_quzz_img .quzz_span5{
+	left:216px;
+}
+}
+
+
+@media screen and (max-width:1200px) {
+.nav{
+	padding-left:1%;
+}
+
+.wdang_tab,.glqxian2_btn{
+	padding-left:3.312%;
+}
+.wdang_tab a{
+	margin-right:3%;
+}
+.wdang_c{
+	padding:0 3.312% 0 3.312%;
+}
+.wdang_c .wdang_s table td .wds_a{
+	padding:0 9px;
+}
+.nav ul li a{
+	padding:0 9px 0 27px;
+	background-position: 6px center;
+	font-size:14px;
+}	
+
+.xmugonj_inputtext{
+	width:180px;
+}
+
+.xmulist_quzz_img2{
+	border:0;
+	padding:80px 0 0 0;
+}
+.xmulist_quzz_img .quzz_span5{
+	left:136px;
+}
+
+.wdang_tab,.xmugouj_tab,.page_tit_warp,.bgengyx_ss,.explain_t,.pl37_w{
+	padding-left:15px;
+}
+.wdang_btn,.xqzzny_c1{
+	margin-left:15px;
+}
+.document_maina,.plpr37,.wdang_c,.xmugonj_cont,.xuqiuzz_cont,.bgeng_table1,.bgeng_table2,.current_wz,.xiugaixq_cont,.xqzzny_t1,.xmulist1,.delu_list2 .page_tit_warp,.glqxian2_btn,.zhuiztu_cont_botm,.zhuiztu_cont_top{
+	padding:0 15px;
+}
+.wdang_c0803{
+	padding:0;
+}
+.bgenglist{
+	margin:0 15px;
+}
+.wendfbku_tit{
+	padding:0;
+}
+}
+@media screen and (max-width:1340px) {
+	
+	
+}
+
+
+.page_1200{}
+.page_1200 .nav{
+	padding-left:1%;
+}
+
+.page_1200 .wdang_tab a{
+	margin-right:3%;
+}
+.page_1200 .wdang_c .wdang_s table td .wds_a{
+	padding:0 9px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

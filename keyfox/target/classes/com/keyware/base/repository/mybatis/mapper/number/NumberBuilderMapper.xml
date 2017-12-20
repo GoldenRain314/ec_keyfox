@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.number.NumberBuilderMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.number.NumberBuilder" >
+    <id column="number_id" property="numberId" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    "number_id", "number"
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from NUMBER_BUILDER
+    where "number_id" = #{numberId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from NUMBER_BUILDER
+    where number_id = #{numberId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.number.NumberBuilder" >
+    insert into NUMBER_BUILDER (number_id, number)
+    values (#{numberId,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.number.NumberBuilder" >
+    insert into NUMBER_BUILDER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="numberId != null" >
+        "number_id",
+      </if>
+      <if test="number != null" >
+        "number",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="numberId != null" >
+        #{numberId,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.number.NumberBuilder" >
+    update NUMBER_BUILDER
+    <set >
+      <if test="number != null" >
+        "number" = #{number,jdbcType=INTEGER},
+      </if>
+    </set>
+    where "number_id" = #{numberId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.number.NumberBuilder" >
+    update NUMBER_BUILDER
+    set number = #{number,jdbcType=INTEGER}
+    where number_id = #{numberId,jdbcType=VARCHAR}
+  </update>
+</mapper>

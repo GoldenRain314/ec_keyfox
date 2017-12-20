@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.PermissionMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.Permission" >
+    <id column="permission_id" property="permissionId" jdbcType="VARCHAR" />
+    <result column="permission_name" property="permissionName" jdbcType="VARCHAR" />
+    <result column="permission" property="permission" jdbcType="VARCHAR" />
+    <result column="permission_url" property="permissionUrl" jdbcType="VARCHAR" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="PROJECT_SOURCE" property="projectSource" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    "permission_id", "permission_name", "permission", "permission_url",PROJECT_SOURCE
+  </sql>
+  
+  <select id="getNoMenuPermissionList" resultMap="BaseResultMap">
+  	select 
+    	<include refid="Base_Column_List" />
+    from PERMISSION
+    where 
+    	PROJECT_SOURCE = #{projectSource}
+    	and "permission_id" not in (select "permission_id" FROM MENU_PERMISSON)
+    
+  </select>
+  
+  <select id="selectByPermission" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.Permission">
+  	select
+		PERMISSION."permission_id", 
+		PERMISSION."permission_name", 
+		PERMISSION."permission", 
+		PERMISSION."permission_url",
+		MENU."menu_name"
+	from PERMISSION
+	LEFT JOIN MENU_PERMISSON mp ON "PERMISSION"."permission_id" = MP."permission_id"
+	LEFT JOIN MENU on MP."menu_id" = MENU."menu_id"
+    where PERMISSION.PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    	<if test="permissionId != null">
+    		and PERMISSION."permission_id" = #{permissionId,jdbcType=VARCHAR}
+    	</if>
+    	<if test="permissionName != null">
+    		and PERMISSION."permission_name" like '%'||#{permissionName,jdbcType=VARCHAR}||'%'
+    	</if>
+    	<if test="permission != null">
+    		and PERMISSION."permission" = #{permission,jdbcType=VARCHAR}
+    	</if>
+    	<if test="permissionUrl != null">
+    		and PERMISSION."permission_url" = #{permissionUrl,jdbcType=VARCHAR}
+    	</if>
+    	<if test="isSys != 'sysadmin'">
+	     	and MENU."is_sys" = '0'
+		</if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from PERMISSION
+    where "permission_id" = #{permissionId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from PERMISSION
+    where "permission_id" = #{permissionId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.Permission" >
+    insert into PERMISSION (permission_id, permission_name, permission, 
+      permission_url,PROJECT_SOURCE)
+    values (#{permissionId,jdbcType=VARCHAR}, #{permissionName,jdbcType=VARCHAR}, #{permission,jdbcType=VARCHAR}, 
+      #{permissionUrl,jdbcType=VARCHAR},#{projectSource,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.Permission" >
+    insert into PERMISSION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="permissionId != null" >
+        "permission_id",
+      </if>
+      <if test="permissionName != null" >
+        "permission_name",
+      </if>
+      <if test="permission != null" >
+        "permission",
+      </if>
+      <if test="permissionUrl != null" >
+        "permission_url",
+      </if>
+      <if test="projectSource != null">
+      	PROJECT_SOURCE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="permissionId != null" >
+        #{permissionId,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionName != null" >
+        #{permissionName,jdbcType=VARCHAR},
+      </if>
+      <if test="permission != null" >
+        #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionUrl != null" >
+        #{permissionUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="projectSource != null">
+      	#{projectSource,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.Permission" >
+    update PERMISSION
+    <set >
+      <if test="permissionName != null" >
+        "permission_name" = #{permissionName,jdbcType=VARCHAR},
+      </if>
+      <if test="permission != null" >
+        "permission" = #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionUrl != null" >
+        "permission_url" = #{permissionUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where "permission_id" = #{permissionId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.Permission" >
+    update PERMISSION
+    set permission_name = #{permissionName,jdbcType=VARCHAR},
+      permission = #{permission,jdbcType=VARCHAR},
+      permission_url = #{permissionUrl,jdbcType=VARCHAR}
+    where permission_id = #{permissionId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getPermissionByAccountId" resultMap="BaseResultMap">
+	SELECT DISTINCT
+		"PERMISSION"."permission_id",
+		"PERMISSION"."permission_name",
+		"PERMISSION"."permission",
+		"PERMISSION"."permission_url"
+		FROM
+			"K_USER" "USER"
+	INNER JOIN "USER_ROLE" ON ("USER"."id"="USER_ROLE"."user_id")
+	INNER JOIN "ROLE" ON ("USER_ROLE"."role_id"="ROLE"."role_id")
+	INNER JOIN ROLE_PERMISSON ON ("ROLE"."role_id"=ROLE_PERMISSON."role_id")
+	INNER JOIN "PERMISSION" ON (ROLE_PERMISSON."permission_id" = "PERMISSION"."permission_id")
+	WHERE
+		"USER"."user_id" = #{userId}
+		and "USER".PROJECT_SOURCE = #{projectSource}
+  </select>
+  
+  
+</mapper>

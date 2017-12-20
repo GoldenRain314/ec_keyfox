@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keyware.base.repository.mybatis.itf.department.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.department.Department">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="order_no" jdbcType="FLOAT" property="orderNo" />
+    <result column="comments" jdbcType="VARCHAR" property="comments" />
+    <result column="dept_create_time" jdbcType="VARCHAR" property="deptCreateTime" />
+    <result column="dept_number" jdbcType="VARCHAR" property="deptNumber" />
+    <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="total_workers" jdbcType="FLOAT" property="totalWorkers" />
+    <result column="super_leader" jdbcType="VARCHAR" property="superLeader" />
+    <result column="interface_person" jdbcType="VARCHAR" property="interfacePerson" />
+    <result column="depart_abbrevia" jdbcType="VARCHAR" property="departAbbrevia" />
+    <result column="charge" jdbcType="VARCHAR" property="charge" />
+    <result column="is_sys" jdbcType="VARCHAR" property="isSys" />
+    <result column="project_source" jdbcType="VARCHAR" property="projectSource" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dept_name, parent_id, order_no, comments, dept_create_time, dept_number, manager, 
+    total_workers, super_leader, interface_person, depart_abbrevia, charge, is_sys, project_source
+  </sql>
+ <select id="selectByDeparmentName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from DEPARTMENT
+    where "dept_name" = #{deptName,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectByDeparmentInfo" parameterType="com.keyware.base.repository.entity.department.Department" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from DEPARTMENT
+    where 1=1
+    and DEPARTMENT."project_source"= #{projectSource,jdbcType=VARCHAR}
+     <if test="isSys != 'sysadmin'">
+     	and "is_sys" = '0'
+     </if>
+     <if test="deptName != null and deptName != ''">
+     	and "dept_name" like '%'||#{deptName,jdbcType=VARCHAR}||'%'
+     </if>
+      <if test="deptNumber != null and deptNumber != ''">
+     	and "dept_number" like '%'||#{deptNumber,jdbcType=VARCHAR}||'%'
+     </if>
+    order by  "dept_create_time" DESC
+  </select>
+  
+  
+  <select id="selectByparentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from DEPARTMENT
+    where "parent_id" = #{0}
+    and "project_source"=#{1}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from DEPARTMENT
+    where "id" = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from DEPARTMENT
+    where "id" in <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}  
+     </foreach>
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.department.Department" >
+    insert into DEPARTMENT ("id","dept_name","parent_id","order_no","comments","dept_create_time","dept_number","manager", 
+    "total_workers","super_leader","interface_person","depart_abbrevia","charge","project_source","is_sys")
+    values (#{id,jdbcType=VARCHAR},#{deptName,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=DECIMAL},#{comments,jdbcType=VARCHAR},#{deptCreateTime,jdbcType=VARCHAR},#{deptNumber,jdbcType=VARCHAR}, #{manager,jdbcType=VARCHAR}, #{totalWorkers,jdbcType=DECIMAL}, 
+      #{superLeader,jdbcType=VARCHAR},#{interfacePerson,jdbcType=VARCHAR},#{departAbbrevia,jdbcType=VARCHAR}, 
+      #{charge,jdbcType=VARCHAR},#{projectSource,jdbcType=VARCHAR},#{isSys,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.department.Department" >
+    insert into DEPARTMENT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        "id",
+      </if>
+      <if test="deptName != null" >
+        "dept_name",
+      </if>
+      <if test="parentId != null" >
+        "parent_id",
+      </if>
+      <if test="orderNo != null" >
+        "order_no",
+      </if>
+      <if test="comments != null" >
+        "comments",
+      </if>
+      <if test="deptCreateTime != null" >
+        "dept_create_time",
+      </if>
+      <if test="deptNumber != null" >
+        "dept_number",
+      </if>
+      <if test="manager != null" >
+        "manager",
+      </if>
+      <if test="totalWorkers != null" >
+        "total_workers",
+      </if>
+      <if test="superLeader != null" >
+        "super_leader",
+      </if>
+      <if test="interfacePerson != null" >
+        "interface_person",
+      </if>
+      <if test="departAbbrevia != null" >
+        "depart_abbrevia",
+      </if>
+      <if test="charge != null" >
+        "charge",
+      </if>
+       <if test="projectSource != null" >
+        "project_source",
+      </if>
+      <if test="isSys != null" >
+        "is_sys"
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null" >
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=DECIMAL},
+      </if>
+      <if test="comments != null" >
+        #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCreateTime != null" >
+        #{deptCreateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deptNumber != null" >
+        #{deptNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="manager != null" >
+        #{manager,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWorkers != null" >
+        #{totalWorkers,jdbcType=DECIMAL},
+      </if>
+      <if test="superLeader != null" >
+        #{superLeader,jdbcType=VARCHAR},
+      </if>
+      <if test="interfacePerson != null" >
+        #{interfacePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="departAbbrevia != null" >
+        #{departAbbrevia,jdbcType=VARCHAR},
+      </if>
+      <if test="charge != null" >
+        #{charge,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSource != null" >
+        #{projectSource,jdbcType=VARCHAR},
+      </if>
+      <if test="isSys != null" >
+        #{isSys,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.department.Department" >
+    update DEPARTMENT
+    <set >
+      <if test="deptName != null" >
+        "dept_name" = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        "parent_id" = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        "order_no" = #{orderNo,jdbcType=DECIMAL},
+      </if>
+      <if test="comments != null" >
+        "comments" = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCreateTime != null" >
+        "dept_create_time" = #{deptCreateTime,jdbcType=VARCHAR},
+      </if>
+        <if test="deptNumber != null" >
+        "dept_number" = #{deptNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="manager != null" >
+        "manager" = #{manager,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWorkers != null" >
+        "total_workers" = #{totalWorkers,jdbcType=DECIMAL},
+      </if>
+      <if test="superLeader != null" >
+        "super_ leader" = #{superLeader,jdbcType=VARCHAR},
+      </if>
+      <if test="interfacePerson != null" >
+        "interface_person" = #{interfacePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="departAbbrevia != null" >
+        "depart_abbrevia" = #{departAbbrevia,jdbcType=VARCHAR},
+      </if>
+      <if test="charge != null" >
+        "charge" = #{charge,jdbcType=VARCHAR},
+      </if>
+       <if test="project_source != null" >
+        "project_source" = #{projectSource,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where "id" = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.department.Department" >
+    update DEPARTMENT
+    set <if test="deptName != null" >"dept_name" = #{deptName,jdbcType=VARCHAR},</if>
+      <if test="parentId != null" >"parent_id" = #{parentId,jdbcType=VARCHAR},</if>
+      <if test="orderNo != null" >"order_no" = #{orderNo,jdbcType=DECIMAL},</if>
+      <if test="deptCreateTime != null" >"dept_create_time" = #{deptCreateTime,jdbcType=VARCHAR},</if>
+      <if test="comments != null" >"comments" = #{comments,jdbcType=VARCHAR},</if>
+      <if test="deptNumber != null" >"dept_number" = #{deptNumber,jdbcType=VARCHAR},</if>
+      <if test="manager != null" >"manager" = #{manager,jdbcType=VARCHAR},</if>
+      <if test="totalWorkers != null" >"total_workers" = #{totalWorkers,jdbcType=DECIMAL},</if>
+      <if test="superLeader != null" >"super_leader" = #{superLeader,jdbcType=VARCHAR},</if>
+      <if test="interfacePerson != null" >"interface_person" = #{interfacePerson,jdbcType=VARCHAR},</if>
+      <if test="departAbbrevia != null" >"depart_abbrevia" = #{departAbbrevia,jdbcType=VARCHAR},</if>
+      <if test="charge != null" >"charge" = #{charge,jdbcType=VARCHAR},</if>
+      <if test="projectSource != null" >"project_source" = #{projectSource,jdbcType=VARCHAR},</if>
+      <if test="id != null" >"id" = #{id,jdbcType=VARCHAR}</if>
+    where "id" = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from DEPARTMENT
+  </select>
+  
+  <select id="selectByDept" resultType="com.keyware.base.vo.user.DepartmentVo" parameterType="com.keyware.base.repository.entity.department.Department">
+  	select 
+			d1."id" id, 
+			d1."dept_name"	deptName, 
+			d1."parent_id"	parentId, 
+			d1."order_no"	orderNo, 
+			d1."comments"	comments, 
+			d1."dept_create_time"	deptCreateTime,
+			d1."dept_number"	deptNumber, 
+			d1."manager"	manager, 
+			d1."total_workers"	totalWorkers, 
+			d1."super_leader"	superLeader, 
+			d1."interface_person"	interfacePerson, 
+			d1."depart_abbrevia"	departAbbrevia, 
+			d1."charge"	charge,
+			d1."project_source" project_source,
+			d2."dept_name"	parentDeptName
+	from DEPARTMENT d1
+	LEFT JOIN DEPARTMENT d2 ON D1."parent_id" = D2."id"
+	order BY D1."dept_create_time" desc    
+  </select>
+  
+  <select id="getParentId" resultMap="BaseResultMap" >
+    select "id","dept_name","parent_id","project_source"
+    from DEPARTMENT 
+    where 1=1
+    <if test="parentId != null" >   
+         and "id" != #{parentId,jdbcType=VARCHAR}  
+    </if>
+    <if test="isSys != 'sysadmin'">
+     	and "is_sys" = '0'
+	</if> 
+  </select>
+   <select id="getChildId" resultMap="BaseResultMap" >
+    select "id","dept_name","parent_id"
+    from DEPARTMENT 
+    where 1=1
+    <if test="nodeId != null" >   
+         and "parent_id" = #{nodeId,jdbcType=VARCHAR}  </if>  
+  </select>
+  
+  <select id="selectByDeparmentInfoSelect" parameterType="com.keyware.base.repository.entity.department.Department" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from DEPARTMENT
+    where 1=1
+     <if test="isSys != 'sysadmin'">
+     	and "is_sys" = '0'
+     </if>
+     <if test="deptName != null and deptName != ''">
+     	and "dept_name" = #{deptName,jdbcType=VARCHAR}
+     </if>
+      <if test="deptNumber != null and deptNumber != ''">
+     	and "dept_number" = #{deptNumber,jdbcType=VARCHAR}
+     </if>
+    order by  "dept_create_time" DESC
+  </select>
+</mapper>

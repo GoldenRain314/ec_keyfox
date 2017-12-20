@@ -1,0 +1,148 @@
+@charset "utf-8";
+/* CSS Document */
+/****************************
+ * version:1.0
+ * By:Vick
+ * Date:2013-11-18
+ *
+ */
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, abbr, address, cite, code, del, dfn, em, img, sub, sup, var, i, dl, dd, dt, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video{margin:0;padding:0; zoom:1;}
+article, aside, figure, footer, header, hgroup, nav, menu, section {display: block;}
+h1,h2,h3,h4,h5,h6{font-size:100%; }
+input, select {	vertical-align: middle;}
+textarea{resize:none;}
+a,button{outline: none;*star: expression(this.onFocus=this.blur());cursor: pointer;}
+img{vertical-align:top;}
+ul,li{ list-style:none;}
+
+/*大体架构
+ ----------*/
+body,html {
+	color: #404040;
+	font-family:Microsoft Yahei,Arial;
+	width: 100%;
+	font-size:12px;
+	overflow-x:hidden;		
+}	
+body{	
+	overflow:hidden;		
+}	
+.container {
+	position: relative;
+	margin: 0 auto;
+	width: 100%;
+	height:100%;	
+}
+/**主体**/
+img {
+	border: 0;
+	vertical-align: middle;
+	display:block;
+}
+iframe{
+	position: relative;	
+	border: 0;
+	overflow: hidden;
+}
+a{text-decoration:none;color: #404040;}
+a:hover{ color:#303030;}
+a:active{text-decoration:none;color: #404040;}
+i{font-style:normal;}
+
+/*颜色值
+ --------------*/
+.orange {
+	color: #ffe400;
+}
+.blue {
+	color: #699BCC;
+}
+
+
+/*清除浮动
+ --------------*/
+.clear {
+	padding: 0;
+	margin: 0;
+	width: 0;
+	height: 0;
+	font-size: 0;
+	overflow: 0;
+	clear: both;
+	line-height: 0;
+}
+.clearfix {
+  zoom: 1;
+  _height: 1px
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden
+}
+/*清楚文字内容
+ --------------*/
+.txtIndent {
+	text-indent: -9999em;
+}
+/*用于seo不显示的内容
+ --------------*/
+.seo {
+	width: 0;
+	height: 0;
+	overflow: hidden;
+	position: absolute;
+	visibility: hidden;
+	top: 0;
+	left: 0;
+}
+.seo, .hideImg {
+	width: 0;
+	height: 0;
+	overflow: hidden;
+	position: absolute;
+	visibility: hidden;
+	top: 0;
+	left: 0;
+}
+.hideImg {
+	overflow: hidden;
+}
+.hideImg img {
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+/*左浮动和右浮动
+ --------------*/
+.fl {
+	float: left;
+}
+.fr {
+	float: right;
+}
+.fl, .fr {
+	_display: inline;
+}
+.ma{
+	margin:0 auto;
+}
+input,textarea{border-radius:0; padding:0; margin:0; /*去除input默认样式*/}
+em{
+	font-style:normal;
+}
+input,textarea:focus {
+	outline: none;
+}
+/**头部代码**/
+
+
+
+
+
+
+
+
+

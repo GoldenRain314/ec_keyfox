@@ -1,0 +1,83 @@
+@charset 'utf-8';
+html,body,div,span,strong,h1,h2,h3,h4,h5,h6,p,abbr,address,cite,code,del,dfn,em,img,sub,sup,var,i,dl,dd,dt,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,figure,footer,header,hground,menu,nav,section,time,mark,audio,video { margin:0; padding:0; zoom:1;}
+h1,h2,h3,h4,h5,h6 {
+    margin:0;
+    padding:0;
+}
+/*html5*/
+article,aside,dialog,footer,header,section,footer,nav,figure,menu{
+    display:block;
+}
+input,select {
+    vertical-align:middle;
+    outline:none;
+    padding:0;
+    border:1px solid #666;
+}
+textarea {
+    resize:none;
+    outline:none;
+}
+a,button {
+    outline:none;
+    *star:expression(this.onFocus = this.blur());
+    cursor:pointer;
+}
+ul,li {
+    list-style:none;
+}
+html {
+    overflow-y:auto;
+    overflow-x:hidden;
+    font-size:100%; /* 兼容ie浏览器字体大小弹性布局设置  */
+}
+img {
+    border: 0;
+    vertical-align: middle;
+}
+a {
+    text-decoration:none;
+}
+i {
+    font-size:normal;
+}
+input,textarea,select {
+    padding-left:10px;
+}
+iframe {
+    position: relative;
+    border: 0;
+    overflow: hidden;
+    height:100%;
+    width:100%;
+}
+.clear {
+    padding:0;
+    margin:0;
+    width:0;
+    height:0;
+    font-size:0;
+    overflow:0;
+    line-height:0;
+    clear:both;
+}
+.clearfix :after{
+    _height:1px;
+    content:"";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+}
+.clearfix {
+    zoom:1;
+}
+.fl {
+    float:left;
+}
+.fr {
+    float:right;
+}
+.fl,.fr {
+    display:inline;
+}

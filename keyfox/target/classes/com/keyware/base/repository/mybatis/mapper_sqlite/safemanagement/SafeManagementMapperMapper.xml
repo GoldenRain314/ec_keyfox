@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keyware.base.repository.mybatis.itf.safemanagement.SafeManagementMapper">
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.safemanagement.SafeManagement">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="system_level" jdbcType="FLOAT" property="systemLevel" />
+    <result column="pwd_locktimes" jdbcType="FLOAT" property="pwdLocktimes" />
+    <result column="minimum_pwd_length" jdbcType="FLOAT" property="minimumPwdLength" />
+    <result column="maximum_pwd_length" jdbcType="FLOAT" property="maximumPwdLength" />
+    <result column="pwd_expiration_time" jdbcType="FLOAT" property="pwdExpirationTime" />
+    <result column="user_inactive_time" jdbcType="FLOAT" property="userInactiveTime" />
+    <result column="pwd_change_cycle" jdbcType="FLOAT" property="pwdChangeCycle" />
+    <result column="project_source" jdbcType="VARCHAR" property="projectSource" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, system_level, pwd_locktimes, minimum_pwd_length, maximum_pwd_length, pwd_expiration_time, 
+    user_inactive_time, pwd_change_cycle, project_source
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from SAFE_MANAGEMENT
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from SAFE_MANAGEMENT
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.safemanagement.SafeManagement">
+    insert into SAFE_MANAGEMENT (id, system_level, pwd_locktimes, 
+      minimum_pwd_length, maximum_pwd_length, pwd_expiration_time, 
+      user_inactive_time, pwd_change_cycle, project_source
+      )
+    values (#{id,jdbcType=VARCHAR}, #{systemLevel,jdbcType=FLOAT}, #{pwdLocktimes,jdbcType=FLOAT}, 
+      #{minimumPwdLength,jdbcType=FLOAT}, #{maximumPwdLength,jdbcType=FLOAT}, #{pwdExpirationTime,jdbcType=FLOAT}, 
+      #{userInactiveTime,jdbcType=FLOAT}, #{pwdChangeCycle,jdbcType=FLOAT}, #{projectSource,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.safemanagement.SafeManagement">
+    insert into SAFE_MANAGEMENT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="systemLevel != null">
+        system_level,
+      </if>
+      <if test="pwdLocktimes != null">
+        pwd_locktimes,
+      </if>
+      <if test="minimumPwdLength != null">
+        minimum_pwd_length,
+      </if>
+      <if test="maximumPwdLength != null">
+        maximum_pwd_length,
+      </if>
+      <if test="pwdExpirationTime != null">
+        pwd_expiration_time,
+      </if>
+      <if test="userInactiveTime != null">
+        user_inactive_time,
+      </if>
+      <if test="pwdChangeCycle != null">
+        pwd_change_cycle,
+      </if>
+      <if test="projectSource != null">
+        project_source,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="systemLevel != null">
+        #{systemLevel,jdbcType=FLOAT},
+      </if>
+      <if test="pwdLocktimes != null">
+        #{pwdLocktimes,jdbcType=FLOAT},
+      </if>
+      <if test="minimumPwdLength != null">
+        #{minimumPwdLength,jdbcType=FLOAT},
+      </if>
+      <if test="maximumPwdLength != null">
+        #{maximumPwdLength,jdbcType=FLOAT},
+      </if>
+      <if test="pwdExpirationTime != null">
+        #{pwdExpirationTime,jdbcType=FLOAT},
+      </if>
+      <if test="userInactiveTime != null">
+        #{userInactiveTime,jdbcType=FLOAT},
+      </if>
+      <if test="pwdChangeCycle != null">
+        #{pwdChangeCycle,jdbcType=FLOAT},
+      </if>
+      <if test="projectSource != null">
+        #{projectSource,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.safemanagement.SafeManagement">
+    update SAFE_MANAGEMENT
+    <set>
+      <if test="systemLevel != null">
+        system_level = #{systemLevel,jdbcType=FLOAT},
+      </if>
+      <if test="pwdLocktimes != null">
+        pwd_locktimes = #{pwdLocktimes,jdbcType=FLOAT},
+      </if>
+      <if test="minimumPwdLength != null">
+        minimum_pwd_length = #{minimumPwdLength,jdbcType=FLOAT},
+      </if>
+      <if test="maximumPwdLength != null">
+        maximum_pwd_length = #{maximumPwdLength,jdbcType=FLOAT},
+      </if>
+      <if test="pwdExpirationTime != null">
+        pwd_expiration_time = #{pwdExpirationTime,jdbcType=FLOAT},
+      </if>
+      <if test="userInactiveTime != null">
+        user_inactive_time = #{userInactiveTime,jdbcType=FLOAT},
+      </if>
+      <if test="pwdChangeCycle != null">
+        pwd_change_cycle = #{pwdChangeCycle,jdbcType=FLOAT},
+      </if>
+      <if test="projectSource != null">
+        project_source = #{projectSource,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.safemanagement.SafeManagement">
+    update SAFE_MANAGEMENT
+    set system_level = #{systemLevel,jdbcType=FLOAT},
+      pwd_locktimes = #{pwdLocktimes,jdbcType=FLOAT},
+      minimum_pwd_length = #{minimumPwdLength,jdbcType=FLOAT},
+      maximum_pwd_length = #{maximumPwdLength,jdbcType=FLOAT},
+      pwd_expiration_time = #{pwdExpirationTime,jdbcType=FLOAT},
+      user_inactive_time = #{userInactiveTime,jdbcType=FLOAT},
+      pwd_change_cycle = #{pwdChangeCycle,jdbcType=FLOAT},
+      project_source = #{projectSource,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+   <select id="selectAll" resultMap="BaseResultMap" >
+ SELECT "id",
+ 	  "system_level",
+      "pwd_locktimes",
+      "minimum_pwd_length",
+      "maximum_pwd_length",
+      "pwd_expiration_time",
+      "user_inactive_time",
+      "pwd_change_cycle",
+      "project_source"
+       FROM SAFE_MANAGEMENT
+  </select>
+  <select id="selectInfo" resultMap="BaseResultMap" >
+ SELECT "id",
+ 	  "system_level",
+      "pwd_locktimes",
+      "minimum_pwd_length",
+      "maximum_pwd_length",
+      "pwd_expiration_time",
+      "user_inactive_time",
+      "pwd_change_cycle",
+      "project_source"
+       FROM SAFE_MANAGEMENT where "system_level"=(select min("system_level") FROM SAFE_MANAGEMENT)
+  </select>
+ <select id="selectProjectInfo" resultMap="BaseResultMap" >
+ SELECT "id",
+ 	  "system_level",
+      "pwd_locktimes",
+      "minimum_pwd_length",
+      "maximum_pwd_length",
+      "pwd_expiration_time",
+      "user_inactive_time",
+      "pwd_change_cycle",
+      "project_source"
+       FROM SAFE_MANAGEMENT where "system_level"=#{systemLevel,jdbcType=DECIMAL}
+  </select>
+</mapper>

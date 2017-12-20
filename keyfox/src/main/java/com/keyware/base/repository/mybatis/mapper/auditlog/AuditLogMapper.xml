@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.auditlog.AuditLogMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.auditlog.AuditLog" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="log_name" property="logName" jdbcType="VARCHAR" />
+    <result column="log_name_type" property="logNameType" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+    <result column="ip_address" property="ipAddress" jdbcType="VARCHAR" />
+    <result column="oper_time" property="operTime" jdbcType="VARCHAR" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+     <result column="project_source" property="projectSource" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    "id", "log_name", "log_name_type", "user_name", "dept_name", "ip_address", "oper_time", "comments","user_id","project_source"
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from AUDIT_LOG
+    where "id" = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from AUDIT_LOG
+  </select>
+  
+  <select id="selectAdminLog" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from AUDIT_LOG 
+    where "user_id" ='admin'
+    <if test="startDate != null and startDate != ''">
+    	and "oper_time" &gt;= #{startDate,jdbcType=VARCHAR}
+    </if>
+    <if test="endDate != null and endDate != ''">
+    	and "oper_time"  &lt;= #{endDate,jdbcType=VARCHAR}
+    </if>
+    <if test="projectSource">
+    	and "project_source"= #{projectSource,jdbcType=VARCHAR}
+    </if>
+    order by "oper_time" desc
+  </select>
+  <select id="safeSecretAuditLog" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.auditlog.AuditLog">
+    select 
+    <include refid="Base_Column_List" />
+    from AUDIT_LOG 
+    where "user_id" ='safesecret' 
+    <if test="startDate != null and startDate != ''">
+    	and "oper_time" &gt;= #{startDate,jdbcType=VARCHAR}
+    </if>
+    <if test="endDate != null and endDate != ''">
+    	and "oper_time" &lt;= #{endDate,jdbcType=VARCHAR}
+    </if>
+    <if test="projectSource!=null">
+    	and "project_source"= #{projectSource,jdbcType=VARCHAR}
+    </if>
+    order by "oper_time" desc
+  </select>
+  <select id="safeAuditLog" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.auditlog.AuditLog">
+    select 
+    <include refid="Base_Column_List" />
+    from AUDIT_LOG 
+    where "user_id" ='safeaudit' 
+    <if test="startDate != null and startDate != ''">
+    	and "oper_time" &gt;= #{startDate,jdbcType=VARCHAR}
+    </if>
+    <if test="endDate != null and endDate != ''">
+    	and "oper_time" &lt;= #{endDate,jdbcType=VARCHAR}
+    </if>
+    <if test="projectSource!=null">
+    	and "project_source"= #{projectSource,jdbcType=VARCHAR}
+    </if>
+    order by "oper_time" desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from AUDIT_LOG
+    where "id" = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteAudit" parameterType="java.lang.String" >
+    delete from AUDIT_LOG
+    where "id" in <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}
+            </foreach>
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.auditlog.AuditLog" >
+    insert into AUDIT_LOG ("id", "log_name", "log_name_type", "user_name", "dept_name", "ip_address", "oper_time", "comments","user_id","project_source")
+    values (#{id,jdbcType=VARCHAR}, #{logName,jdbcType=VARCHAR}, #{logNameType,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{ipAddress,jdbcType=VARCHAR}, 
+      #{operTime,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{projectSource,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.auditlog.AuditLog" >
+    insert into AUDIT_LOG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="logName != null" >
+        log_name,
+      </if>
+      <if test="logNameType != null" >
+        log_name_type,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="deptName != null" >
+        dept_name,
+      </if>
+      <if test="ipAddress != null" >
+        ip_address,
+      </if>
+      <if test="operTime != null" >
+        oper_time,
+      </if>
+      <if test="comments != null" >
+        comments,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="projectSource != null" >
+        project_source,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="logName != null" >
+        #{logName,jdbcType=VARCHAR},
+      </if>
+      <if test="logNameType != null" >
+        #{logNameType,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null" >
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddress != null" >
+        #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="operTime != null" >
+        #{operTime,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        #{comments,jdbcType=VARCHAR},
+      </if>
+       <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSource != null" >
+        #{projectSource,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.auditlog.AuditLog" >
+    update AUDIT_LOG
+    <set >
+      <if test="logName != null" >
+        log_name = #{logName,jdbcType=VARCHAR},
+      </if>
+      <if test="logNameType != null" >
+        log_name_type = #{logNameType,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null" >
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddress != null" >
+        ip_address = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="operTime != null" >
+        oper_time = #{operTime,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.auditlog.AuditLog" >
+    update AUDIT_LOG
+    set "log_name" = #{logName,jdbcType=VARCHAR},
+      "log_name_type" = #{logNameType,jdbcType=VARCHAR},
+      "user_name" = #{userName,jdbcType=VARCHAR},
+      "dept_name" = #{deptName,jdbcType=VARCHAR},
+      "ip_address" = #{ipAddress,jdbcType=VARCHAR},
+      "oper_time" = #{operTime,jdbcType=VARCHAR},
+      "comments" = #{comments,jdbcType=VARCHAR},
+      "user_id" = #{userId,jdbcType=VARCHAR},
+      "project_source"=#{projectSource,jdbcType=VARCHAR},
+    where "id" = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAudit" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from AUDIT_LOG
+    where "id" in <foreach item="item" index="index" collection="list"   
+           open="(" separator="," close=")">  
+            #{item}
+            </foreach>
+  </select>
+</mapper>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.Role" >
+    <id column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="role_code" property="roleCode" jdbcType="VARCHAR" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="PROJECT_SOURCE" property="projectSource" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    "role_id", "role_code", "role_name", "create_time",PROJECT_SOURCE
+  </sql>
+  
+  <select id="selectRoleUserByRoleId" parameterType="java.lang.String" resultType="com.keyware.base.vo.user.UserVo">
+  	select 
+		"USER"."id" id,
+		"USER"."user_id" userId	,
+		"USER"."user_name" userName,
+		"USER"."depart_id" departId,
+		"USER"."user_creation_time" userCreationTime,
+		"USER"."user_status" userStatus,
+		"USER"."user_lock" userLock,
+		"USER"."logout" logout,
+		DEPARTMENT."dept_name" departName
+	FROM USER_ROLE
+	LEFT JOIN "K_USER" "USER" ON USER_ROLE."user_id" = "USER"."id"
+	LEFT JOIN DEPARTMENT ON "USER"."depart_id" = DEPARTMENT."id"
+	where USER_ROLE."role_id" = #{roleId,jdbcType=VARCHAR}
+	and "USER".PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="selectByRole" parameterType="com.keyware.base.repository.entity.Role" resultMap="BaseResultMap">
+  		select 
+  			<include refid="Base_Column_List"></include>
+  		from "ROLE"
+  		where PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  		<if test="roleId != null">
+  			and "role_id" = #{roleId,jdbcType=VARCHAR}
+  		</if>
+  		<if test="roleCode != null">
+  			and "role_code" = #{roleCode,jdbcType=VARCHAR}
+  		</if>
+  		<if test="roleName != null">
+  			and "role_name" like '%'||#{roleName,jdbcType=VARCHAR}||'%'
+  		</if>
+  		<if test="isSys != 'sysadmin'">
+     		and "is_sys" = '0'
+		</if>
+  		order by "ROLE"."create_time" 
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from "ROLE"
+    where "role_id" = #{roleId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from "ROLE"
+    where "role_id" = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.Role" >
+    insert into ROLE (role_id, role_code, role_name, 
+      create_time,PROJECT_SOURCE, "is_sys")
+    values (#{roleId,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR},#{projectSource,jdbcType=VARCHAR},#{isSys,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.Role" >
+    insert into "ROLE"
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        "role_id",
+      </if>
+      <if test="roleCode != null" >
+        "role_code",
+      </if>
+      <if test="roleName != null" >
+        "role_name",
+      </if>
+      <if test="createTime != null" >
+        "create_time",
+      </if>
+      <if test="projectSource != null">
+      	PROJECT_SOURCE,
+      </if>
+      <if test="isSys != null">
+      	"is_sys"
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null" >
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSource != null">
+      	#{projectSource,jdbcType=VARCHAR},
+      </if>
+      <if test="isSys != null">
+      	#{isSys,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.Role" >
+    update ROLE
+    <set >
+      <if test="roleId != null">
+      	"role_id" = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null" >
+        "role_code" = #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        "role_name" = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        "create_time" = #{createTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where "role_id" = #{roleId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.Role" >
+    update ROLE
+    set role_code = #{roleCode,jdbcType=VARCHAR},
+      role_name = #{roleName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </update>
+  
+  <resultMap id="PermissionMap" type="com.keyware.base.repository.entity.Permission" >
+    <id column="permission_id" property="permissionId" jdbcType="VARCHAR" />
+    <result column="permission_name" property="permissionName" jdbcType="VARCHAR" />
+    <result column="permission" property="permission" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectRolePermission"  parameterType="java.lang.String"  resultMap="PermissionMap" >
+	select
+		"PERMISSION"."permission_id",
+		"PERMISSION"."permission_name",
+		"PERMISSION"."permission"
+	from
+	    "PERMISSION"
+	    inner join ROLE_PERMISSON 
+	        on ("PERMISSION"."permission_id" = ROLE_PERMISSON."permission_id") 
+	WHERE ROLE_PERMISSON."role_id" = #{roleId,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="selectByRoleSelect" parameterType="com.keyware.base.repository.entity.Role" resultMap="BaseResultMap">
+  		select 
+  			<include refid="Base_Column_List"></include>
+  		from "ROLE"
+  		where PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  		<if test="roleId != null">
+  			and "role_id" = #{roleId,jdbcType=VARCHAR}
+  		</if>
+  		<if test="roleCode != null">
+  			and "role_code" = #{roleCode,jdbcType=VARCHAR}
+  		</if>
+  		<if test="roleName != null">
+  			and "role_name"  = #{roleName,jdbcType=VARCHAR} 
+  		</if>
+  		<if test="isSys != 'sysadmin'">
+     		and "is_sys" = '0'
+		</if>
+  		order by "ROLE"."create_time" 
+  </select>
+  
+  
+</mapper>

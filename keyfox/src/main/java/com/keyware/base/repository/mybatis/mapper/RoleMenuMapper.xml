@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.RoleMenuMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.RoleMenu" >
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.RoleMenu" >
+    insert into role_menu 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    	<if test="roleId != null">
+    		"role_id",
+    	</if>
+    	<if test="menuId != null">
+    		"menu_id"
+    	</if>
+    </trim>
+    <trim prefix=" values (" suffix=")" suffixOverrides=",">
+    	<if test="roleId != null">
+    		#{roleId,jdbcType=VARCHAR},
+    	</if>
+    	<if test="menuId != null">
+    		#{menuId,jdbcType=VARCHAR}
+    	</if>
+    </trim>
+  </insert>
+  
+  <delete id="deleteByMenuId" parameterType="java.lang.String">
+  	delete from role_menu where "menu_id" = #{menuId,jdbcType=VARCHAR}
+  </delete>
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select role_id, menu_id
+    from role_menu
+  </select>
+  
+  <select id="selectByRoleId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select "role_id", "menu_id" from role_menu where "role_id" = #{roleId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <delete id="deleteByRoleId" parameterType="java.lang.String">
+  	delete from role_menu where "role_id" = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  
+</mapper>

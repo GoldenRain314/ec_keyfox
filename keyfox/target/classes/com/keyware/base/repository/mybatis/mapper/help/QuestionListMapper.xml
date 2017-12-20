@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.help.QuestionListMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.help.QuestionList" >
+    <id column="q_id" property="qId" jdbcType="VARCHAR" />
+    <result column="q_name" property="qName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="PROJECT_SOURCE" property="projectSource" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    "q_id", "q_name", "create_time", "menu_id",PROJECT_SOURCE
+  </sql>
+  <select id="selectByInfo" resultMap="BaseResultMap" parameterType="com.keyware.base.repository.entity.help.QuestionList">
+  	 select 
+    <include refid="Base_Column_List" />
+    from HELP_QUESTION_LIST
+    where PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+    <if test="menuId != null">
+    	and "menu_id" = #{menuId,jdbcType=VARCHAR}
+    </if>
+    <if test="qName != null">
+    	and "q_name" like '%'||#{qName,jdbcType=VARCHAR}||'%'
+    </if>
+    order by "create_time"
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from HELP_QUESTION_LIST
+    where "q_id" = #{qId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from HELP_QUESTION_LIST
+    where "q_id" = #{qId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.help.QuestionList" >
+    insert into HELP_QUESTION_LIST (q_id, q_name, create_time, 
+      menu_id,PROJECT_SOURCE)
+    values (#{qId,jdbcType=VARCHAR}, #{qName,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
+      #{menuId,jdbcType=VARCHAR},#{projectSource,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.help.QuestionList" >
+    insert into HELP_QUESTION_LIST
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="qId != null" >
+        "q_id",
+      </if>
+      <if test="qName != null" >
+        "q_name",
+      </if>
+      <if test="createTime != null" >
+        "create_time",
+      </if>
+      <if test="menuId != null" >
+        "menu_id",
+      </if>
+      <if test="projectSource != null">
+      	PROJECT_SOURCE
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="qId != null" >
+        #{qId,jdbcType=VARCHAR},
+      </if>
+      <if test="qName != null" >
+        #{qName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+       <if test="projectSource != null">
+      	#{projectSource,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.help.QuestionList" >
+    update HELP_QUESTION_LIST
+    <set >
+      <if test="qName != null" >
+        "q_name" = #{qName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        "create_time" = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        "menu_id" = #{menuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where "q_id" = #{qId,jdbcType=VARCHAR}
+    and PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.help.QuestionList" >
+    update HELP_QUESTION_LIST
+    set q_name = #{qName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      menu_id = #{menuId,jdbcType=VARCHAR}
+    where q_id = #{qId,jdbcType=VARCHAR}
+  </update>
+</mapper>

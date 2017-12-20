@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.keyware.base.repository.mybatis.itf.MenuMapper" >
+  <resultMap id="BaseResultMap" type="com.keyware.base.repository.entity.Menu" >
+    <id column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="menu_level" property="menuLevel" jdbcType="DECIMAL" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="menu_seq" property="menuSeq" jdbcType="DECIMAL" />
+    <result column="class_type" property="classType" jdbcType="VARCHAR" />
+    <result column="is_sys" property="isSys" jdbcType="VARCHAR" />
+    <result column="PROJECT_SOURCE" property="projectSource" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="menuResultMap" type="com.keyware.base.vo.menu.menuVo" extends="BaseResultMap">
+    <collection property="childMenuList" column="menu_id" ofType="com.keyware.base.repository.entity.Menu">
+    	<id column="menu_id1" property="menuId" jdbcType="VARCHAR" />
+	    <result column="menu_level1" property="menuLevel" jdbcType="DECIMAL" />
+	    <result column="parent_id1" property="parentId" jdbcType="VARCHAR" />
+	    <result column="menu_name1" property="menuName" jdbcType="VARCHAR" />
+	    <result column="menu_url1" property="menuUrl" jdbcType="VARCHAR" />
+	    <result column="status1" property="status" jdbcType="CHAR" />
+	    <result column="menu_seq1" property="menuSeq" jdbcType="DECIMAL" />
+	    <result column="class_type1" property="classType" jdbcType="VARCHAR" />
+	    <result column="is_sys1" property="isSys" jdbcType="VARCHAR" />
+	    <result column="PROJECT_SOURCE1" property="projectSource" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  
+  <select id="selectChildNodeByParentIdOrMenuId" resultMap="menuResultMap">
+  	SELECT
+		MENU.*,
+		m1."menu_id" menu_id1,
+		m1."menu_level" menu_level1,
+		m1."parent_id" parent_id1,
+		m1."menu_name" menu_name1,
+		m1."menu_url" menu_url1,
+		m1."status" status1,
+		m1."menu_seq" menu_seq1,
+		m1."class_type" class_type1,
+		m1."is_sys" is_sys1,
+		m1.PROJECT_SOURCE PROJECT_SOURCE1
+	FROM
+		MENU
+	LEFT JOIN MENU m1 ON MENU."menu_id" = m1."parent_id"
+	WHERE 1=1
+	<if test="parentId != null and parentId != ''">
+		and MENU."parent_id" = #{parentId}
+	</if>
+	<if test="menuId != null and menuId != ''">
+		and MENU."menu_id" = #{menuId}
+	</if>
+	order by MENU."menu_seq", m1."menu_seq"
+  </select>
+  
+   <sql id="Base_Column_List" >
+    "menu_id", "menu_level", "parent_id", "menu_name", "menu_url", "status", "menu_seq","class_type",PROJECT_SOURCE
+  </sql>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select * from MENU where PROJECT_SOURCE = #{projectSource}
+  </select>
+  
+  <select id="selectAllFirst" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from MENU
+    where "menu_level" = '1'
+    and PROJECT_SOURCE = #{projectSource}
+    order by "menu_seq"
+  </select>
+  <select id="selectAllSecond" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from MENU
+    where "menu_level" = '2'
+    and PROJECT_SOURCE = #{projectSource}
+    order by "menu_seq"
+  </select>
+  
+  <select id="selectByMneu" resultType="com.keyware.base.repository.entity.Menu" parameterType="com.keyware.base.repository.entity.Menu">
+  	select 
+		m."menu_id" menuId,
+		m."menu_level" menuLevel,
+		m."parent_id" parentId,
+		m."menu_name" menuName,
+		m."menu_url" menuUrl,
+		m."menu_seq" menuSeq,
+		m."status" status,
+		m."class_type" classType,
+		MM."menu_name" parentName
+	from MENU  "M"
+		LEFT JOIN MENU  "MM"
+	ON "M"."parent_id" = "MM"."menu_id"
+  	where m.PROJECT_SOURCE = #{projectSource,jdbcType=VARCHAR}
+  	<if test="menuId != null">
+  		and m."menu_id" = #{menuId,jdbcType=VARCHAR}
+  	</if>
+  	<if test="menuLevel != null">
+  		and m."menu_level" = #{menuLevel,jdbcType=DECIMAL}
+  	</if>
+  	<if test="menuName != null">
+  		and m."menu_name" like '%'||#{menuName,jdbcType=VARCHAR}||'%'
+  	</if>
+  	<if test="parentId != null">
+  		and m."parent_id" = #{parentId,jdbcType=VARCHAR}
+  	</if>
+ 	<if test="isSys != 'sysadmin'">
+	     and m."is_sys" = '0'
+	</if>
+  	order by m."parent_id",m."menu_seq"
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from MENU
+    where "menu_id" = #{menuId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from "MENU"
+    where "menu_id" = #{menuId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.keyware.base.repository.entity.Menu" >
+    insert into MENU (menu_id, menu_level, parent_id, 
+      menu_name, menu_url, status, 
+      menu_seq,PROJECT_SOURCE,is_sys)
+    values (#{menuId,jdbcType=VARCHAR}, #{menuLevel,jdbcType=DECIMAL}, #{parentId,jdbcType=VARCHAR}, 
+      #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{menuSeq,jdbcType=DECIMAL},#{projectSource,jdbcType=VARCHAR},#{isSys,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.keyware.base.repository.entity.Menu" >
+    insert into MENU
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        "menu_id",
+      </if>
+      <if test="menuLevel != null" >
+        "menu_level",
+      </if>
+      <if test="parentId != null" >
+        "parent_id",
+      </if>
+      <if test="menuName != null" >
+        "menu_name",
+      </if>
+      <if test="menuUrl != null" >
+        "menu_url",
+      </if>
+      <if test="status != null" >
+        "status",
+      </if>
+      <if test="menuSeq != null" >
+        "menu_seq",
+      </if>
+      <if test="classType != null">
+      	"class_type",
+      </if>
+      <if test="projectSource != null">
+      	PROJECT_SOURCE,
+      </if>
+      <if test="isSys != null">
+      	IS_SYS
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        #{menuLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="menuSeq != null" >
+        #{menuSeq,jdbcType=DECIMAL},
+      </if>
+      <if test="classType != null">
+      	#{classType,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSource != null">
+      	#{projectSource,jdbcType=VARCHAR},
+      </if>
+      <if test="isSys != null">
+      	#{isSys,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.keyware.base.repository.entity.Menu" >
+    update MENU
+    <set >
+      <if test="menuLevel != null" >
+        "menu_level" = #{menuLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="parentId != null" >
+        "parent_id" = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        "menu_name" = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        "menu_url" = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        "status" = #{status,jdbcType=CHAR},
+      </if>
+      <if test="menuSeq != null" >
+        "menu_seq" = #{menuSeq,jdbcType=DECIMAL},
+      </if>
+      <if test="classType != null">
+      	"class_type" = #{classType,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where "menu_id" = #{menuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keyware.base.repository.entity.Menu" >
+    update MENU
+    set menu_level = #{menuLevel,jdbcType=DECIMAL},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      menu_seq = #{menuSeq,jdbcType=DECIMAL}
+    where menu_id = #{menuId,jdbcType=VARCHAR}
+  </update>
+  
+   <!-- 获取用户账号下的相应的所有一级菜单 -->
+  <select id="getTheLevelMenuBasedOnTheAccountID" resultMap="BaseResultMap" >
+	select 
+		MENU."menu_id",
+		MENU."menu_level",
+		MENU."menu_name",
+		MENU."menu_url",
+		MENU."parent_id",
+		MENU."menu_seq",
+		MENU."class_type"
+	FROM
+		"K_USER" "USER"
+	INNER JOIN USER_ROLE ON ("USER"."id"="USER_ROLE"."user_id")
+	INNER JOIN ROLE ON ("USER_ROLE"."role_id"="ROLE"."role_id")
+	INNER JOIN ROLE_MENU ON ("ROLE"."role_id"="ROLE_MENU"."role_id")
+	INNER JOIN MENU ON ("ROLE_MENU"."menu_id"="MENU"."menu_id") 
+	where 
+		"USER"."user_id" = #{userId}
+		and "USER".PROJECT_SOURCE = #{projectSource}
+		and MENU."menu_level" = 1
+	ORDER BY
+		MENU."menu_seq"
+  </select>
+  
+  <!-- 获取用户账号下的相应的所有二级菜单 -->
+  <select id="getTwoTheLevelMenuBasedOnTheAccountID" resultType="com.keyware.base.vo.menu.menuVo" >
+	select 
+		MENU."menu_id" menuId,
+		MENU."menu_name" name,
+		MENU."menu_url" menuUrl,
+		MENU."parent_id" parentId
+	FROM
+		"K_USER" "USER"
+	INNER JOIN USER_ROLE ON ("USER"."id"="USER_ROLE"."user_id")
+	INNER JOIN ROLE ON ("USER_ROLE"."role_id"="ROLE"."role_id")
+	INNER JOIN ROLE_MENU ON ("ROLE"."role_id"="ROLE_MENU"."role_id")
+	INNER JOIN MENU ON ("ROLE_MENU"."menu_id"="MENU"."menu_id")
+	where 
+		"USER"."user_id" = #{userId}
+		and "USER".PROJECT_SOURCE = #{projectSource}
+		and MENU."menu_level" = 2
+		and menu."parent_id" = #{menuId}
+		<if test="isSys != 'sysadmin'">
+     		and MENU."is_sys" = '0'
+		</if>
+	ORDER BY
+		MENU."menu_seq"
+  </select>
+  
+  <!-- 获取用户账号下的相应的所有三级菜单 -->
+  <select id="getThreeTheLevelMenuBasedOnTheAccountID" resultType="com.keyware.base.vo.menu.menuVo" >
+	select 
+		MENU."menu_id" menuId,
+		MENU."menu_name" name,
+		MENU."menu_url" menuUrl,
+		MENU."parent_id" parentId
+	FROM
+		"K_USER" "USER"
+	INNER JOIN USER_ROLE ON ("USER"."id"="USER_ROLE"."user_id")
+	INNER JOIN ROLE ON ("USER_ROLE"."role_id"="ROLE"."role_id")
+	INNER JOIN ROLE_MENU ON ("ROLE"."role_id"="ROLE_MENU"."role_id")
+	INNER JOIN MENU ON ("ROLE_MENU"."menu_id"="MENU"."menu_id")
+	where 
+		"USER"."user_id" = #{userId}
+		and "USER".PROJECT_SOURCE = #{projectSource}
+		and MENU."menu_level" = 3
+		and menu."parent_id" = #{menuId}
+	ORDER BY
+		MENU."menu_seq"
+  </select>
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from MENU
+    where "menu_name" = #{menuName,jdbcType=VARCHAR}
+    and PROJECT_SOURCE = #{projectSource}
+  </select>
+</mapper>

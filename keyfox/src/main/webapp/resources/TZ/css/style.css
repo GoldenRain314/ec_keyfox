@@ -1,0 +1,294 @@
+@charset 'utf-8';
+/*css重置样式*/
+html,body,div,span,strong,h1,h2,h3,h4,h5,h6,p,abbr,address,cite,code,del,dfn,em,img,sub,sup,var,i,dl,dd,dt,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,figure,footer,header,hground,menu,nav,section,time,mark,audio,video { margin:0; padding:0; zoom:1;}
+h1,h2,h3,h4,h5,h6 {
+    margin:0;
+    padding:0;
+}
+/*html5*/
+article,aside,dialog,footer,header,section,footer,nav,figure,menu{
+    display:block;
+}
+input,select {
+    vertical-align:middle;
+    outline:none;
+    padding:0;
+    border: solid 1px #d6d6d6;
+}
+textarea {
+    resize:none;
+    outline:none;
+}
+a,button {
+    *star:expression(this.onFocus = this.blur());
+    cursor:pointer;
+}
+ul,li {
+    list-style:none;
+}
+html {
+    overflow-y:auto;
+    overflow-x:hidden;
+    font-size:100%; /* 兼容ie浏览器字体大小弹性布局设置  */
+}
+img {
+    border: 0;
+    vertical-align: middle;
+}
+a {
+    text-decoration:none;
+}
+i {
+    font-size:normal;
+}
+input,textarea,select {
+    padding-left:3px;
+}
+iframe {
+    position: relative;
+    border: 0;
+    overflow: hidden;
+    height:100%;
+    width:100%;
+}
+.clear {
+    padding:0;
+    margin:0;
+    width:0;
+    height:0;
+    font-size:0;
+    overflow:hidden;
+    line-height:0;
+    clear:both;
+}
+.clearfix :after{
+    _height:1px;
+    content:"";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+}
+.clearfix {
+    zoom:1;
+}
+.fl {
+    float:left;
+}
+.fr {
+    float:right;
+}
+.fl,.fr {
+    display:inline;
+}
+.ofo{
+    overflow: hidden;
+}
+h4{
+    margin: 10px 0 10px 30px;
+}
+/*
+导航栏 */
+.header {
+    height:74px;
+    background:#056DC5;
+}
+.logo {
+    height: 74px;;
+    line-height:70px;
+    padding: 0px 0px 0px 74px;
+    display: inline;
+    background:url(../img/logo.png) no-repeat 20px center;
+}
+.logo h1{
+    font-size: 22px;
+    font-family: SimHei;
+    color:#fff;
+}
+.install {
+    float: right;
+    display: inline;
+    height:74px;
+    width: 100px;;    /*  较小浏览器时显示100px */
+    text-align:center;
+}
+.install a {
+    display:inline-block;
+    width: 100px;
+    height: 32px;
+    padding-top: 50px;
+    color:#fff;
+}
+.install .define {
+    position: relative;
+    display:inline-block;
+    margin:auto;
+    width: 100px;
+    height:49px;
+    padding-top:25px;
+    color:#fff;
+    background:url(../img/nav_shezhi.png) no-repeat center center;
+}
+.install  .define:hover ,.install .define :focus{
+    background-color:#1a50df;
+}
+.install  .define .d-box {
+    position: absolute;
+    top: 82px;
+    left: 0;
+    height: 200px;
+    width: 120px;
+    z-index: -1;
+}
+.tag {
+    position: absolute;
+    display: none;
+    top:5em;
+    z-index: 999;
+    right: 0;
+    width: 112px;
+    height: auto;
+    border: 1px solid #0571CC;
+    border-radius: 6px;
+    background-color: #FAFAFA;
+    padding: 8px 2px;
+}
+.arrow {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: -20px;
+    right: 46px;
+    zoom: 1;
+}
+.arrow *{
+    position: absolute;
+    display: block;
+    border-width: 10px;
+    border-style: solid dashed dashed dashed;
+    font-size: 0;
+    line-height: 0;
+    zoom: 1;
+}
+.arrow em {
+    border-color:  transparent transparent #0571CC;
+    zoom: 1;
+}
+.arrow span {
+    border-color:  transparent transparent #FAFAFA;
+    top: 2px;
+    zoom: 1;
+}
+.tag ul {
+    height: auto;
+    width: 100%;
+}
+.tag ul li {
+    width: 100%;
+    height: 36px;
+    line-height: 36px;
+    color: #0571CC;
+    font-size: 14px;
+}
+.tag ul li:hover,.tag ul li:focus,.tag ul li:active {
+    background: #0571CC;
+    color: #fff;
+}
+/*                左右结构iframe*/
+ul.ztree{
+    overflow-y:auto;
+}
+.main{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+.main_right{
+    position: absolute;
+    left:110px;
+    top:0;
+    bottom:0;
+    z-index:1000;
+    height:100%;
+    width: 1659px;
+}
+
+.main_left{
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    z-index:1000;
+    width:110px;
+    height:100%;
+    overflow:auto;
+    background: #e7e7e7;
+}
+.writing_doc_tree .ztree{padding-bottom: 10px;}
+.writing_doc_tree .ztree span.node_name{margin-left: 27px;font-size: 14px;color: #444;display: inline-block;padding-bottom:10px}
+.writing_doc_tree .ztree ul.level0 span.node_name{margin-left:30px;height: 40px;line-height: 40px;display: inline-block;font-size: 13px}
+.writing_doc_tree .ztree ul.level1 span.node_name{margin-left:40px;font-size: 12px}
+.writing_doc_tree .ztree li a{display: inline-block;width:100%;height:100%;}
+.writing_doc_tree .ztree li a:hover{background: #d1dbe5}
+
+.writing_doc_tree .ztree li .curSelectedNode {background:#f6f6f6}
+
+.writing_doc_tree .ztree li.level0 a.curSelectedNode #treeDemo_1_ico{
+    background: url(../img/nav_zaixianbianxie_a.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.level0 #treeDemo_21_ico{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/nav_tianjiafulu.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.curSelectedNode #treeDemo_21_ico{
+    background: url(../img/nav_tianjiafulu_a.png) no-repeat center !important;
+}
+
+.writing_doc_tree .ztree li.level0 a.level0 #treeDemo_2_ico{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/nav_zhangjiebiaoshi.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.curSelectedNode #treeDemo_22_ico{
+    background: url(../img/nav_zhangjiebiaoshi_a.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.level0 #treeDemo_5_ico{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/nav_lishibanben.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.curSelectedNode #treeDemo_23_ico{
+    background: url(../img/nav_lishibanben_a.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.level0 #treeDemo_8_ico{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/nav_wendangbiangeng.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level0 a.curSelectedNode #treeDemo_24_ico{
+    background: url(../img/nav_wendangbiangeng_a.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level1 span.ico_open{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/menu_icon2.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level1 span.ico_docu{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/menu_icon1.png) no-repeat center !important;
+}
+.writing_doc_tree .ztree li.level1 span.ico_close{
+    width: 20px !important;
+    display: inline-block;
+    height: 20px !important;
+    background: url(../img/menu_icon1.png) no-repeat center !important;
+}
+/*                      表格*/

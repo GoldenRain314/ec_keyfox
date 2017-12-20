@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- Project definition and call to Parasoft Ant library -->
+<project name="KD-JTest" default="parasoft-test" xmlns:parasoft="antlib:com.parasoft.antlib">
+    <!-- To import the original Ant build.xml file and specify the task to integrate to -->
+    <import file="build.xml"/>
+    <target name="parasoft-test" depends="compile">
+        <!-- To run Jtest on the specified project directory in projectDescription, using the configuration in config and Jtest in jtestHome -->
+        <parasoft:jtest config="E:\parasoft-setting\KeywareConfiguration.properties" localsettings="E:\parasoft-setting\config-keydoc.settings" showdetails="true">
+            <projectDescription basedir="."/>
+			<exclude>**/*.jsp</exclude>
+			<exclude>**/*.htm</exclude>
+			<exclude>**/*.html</exclude>
+			<exclude>**/*.xml</exclude>
+			<exclude>**/*.properties</exclude>
+			<exclude>**/*.tld</exclude>
+			<exclude>**/MANIFEST.MF</exclude>
+        </parasoft:jtest>
+    </target>
+</project>
