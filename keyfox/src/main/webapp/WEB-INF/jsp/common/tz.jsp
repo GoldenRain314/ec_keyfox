@@ -27,3 +27,4 @@ var _baseUrl = "${_baseUrl }";
 <link href='${_resources}/TZ/css/style.css' type='text/css' rel='stylesheet' />
 
 <script src='${_resources}/TZ/js/echarts.js' type='text/javascript'></script>
+<script src='${_resources}/TZ/js/highcharts.js' type='text/javascript'></script>

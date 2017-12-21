@@ -26,10 +26,10 @@
 		</div>
 		<div style="overflow: hidden">
 			<div class="a4 fl">
-				<img src="${_resources}/TZ/img/a4.png" alt="" />
+				<div id="connectionInfor" style="width: 1000px; height: 400px;"></div>
 			</div>
 			<div class="a5 fl">
-				<img src="${_resources}/TZ/img/a5.png" alt="" />
+				<div id="boundFlowPackageNum" style="width: 1000px; height: 400px;"></div>
 			</div>
 		</div>
 		<div style="overflow: hidden">
@@ -43,58 +43,67 @@
 	</div>
 </body>
 <script type="text/javascript">
-	var packageNum = echarts.init(document.getElementById('packageNum'));
-	$.get('${_baseUrl}/drawing/packageNum', {
-		"date" : "2017-12-10"
-	}).done(function(data) {
-		console.info(data);
-		packageNum.setOption({
-			title : {
-				text : '流量状态'
-			},
-			tooltip : {
-				trigger : 'axis',
-				axisPointer : {
-					type : 'cross',
-					label : {
-						backgroundColor : '#6a7985'
-					}
-				}
-			},
-			legend : {
-				data : data
-			},
-			toolbox : {
-				feature : {
-					saveAsImage : {}
-				}
-			},
-			grid : {
-				left : '3%',
-				right : '4%',
-				bottom : '3%',
-				containLabel : true
-			},
-			xAxis : [ {
-				type : 'time'
-			} ],
-			yAxis : [ {
-				type : 'value',
-				name : '字节数单位'
-			} ],
-			series : data
-		});
+	$.get('${_baseUrl}/drawing/packageNum', {"date" : "2017-12-10"}).done(function(data) {$(function () {
+			    $('#packageNum').highcharts({
+			      credits:{
+			        enabled:false // 禁用版权信息
+			      },
+			      xAxis: {
+			        type: 'datetime',
+			        dateTimeLabelFormats: {
+			          minute: '%H:%M',
+			          day: '%e. %b'
+			        }
+			      },
+
+			      chart: {
+			        type: 'area',
+			        zoomType: 'x'
+			      },
+			      title: {
+			        text: '包数河流图'
+			      },
+			      subtitle: {
+			        text: ''
+			      },
+			      yAxis: {
+			        title: {
+			          text: '个'
+			        },
+			        labels: {
+			          formatter: function () {
+			            return this.value;
+			          }
+			        }
+			      },
+			      tooltip: {
+			        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} )<br/>',
+			        shared: true
+			      },
+			      plotOptions: {
+			        area: {
+			          stacking: 'percent',
+			          lineColor: '#ffffff',
+			          lineWidth: 1,
+			          marker: {
+			            lineWidth: 1,
+			            lineColor: '#ffffff'
+			          }
+			        }
+			      },
+			      series:data
+			    });
+			  });
 	});
 
+	<!--
 	var appScale = echarts.init(document.getElementById('appScale'));
 	$.get('${_baseUrl}/drawing/appScale', {
 		"date" : "2017-12-10"
 	}).done(function(data) {
-		console.info(data);
 		appScale.setOption({
 			title : {
-		        text: '某站点用户访问来源',
-		        subtext: '纯属虚构',
+		        text: '应用比例',
 		        x:'left'
 		    },
 		    tooltip : {
@@ -104,31 +113,121 @@
 		    legend: {
 		        orient: 'vertical',
 		        left: 'right',
-		        data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+		        data: ['APP_MAIL_SMTP','APP_RDP','APP_MAIL_POP','APP_NDPI_BITBORRENT','APP_MYSQL','APP_SSH','APP_SSL','APP_HTTP','APP_VOIP','APP_NDPI_EDONKEY']
 		    },
-		    series : [
-		        {
-		            name: '访问来源',
-		            type: 'pie',
-		            radius : '55%',
-		            center: ['50%', '60%'],
-		            data:[
-		                {value:335, name:'直接访问'},
-		                {value:310, name:'邮件营销'},
-		                {value:234, name:'联盟广告'},
-		                {value:135, name:'视频广告'},
-		                {value:1548, name:'搜索引擎'}
-		            ],
-		            itemStyle: {
-		                emphasis: {
-		                    shadowBlur: 10,
-		                    shadowOffsetX: 0,
-		                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-		                }
-		            }
-		        }
-		    ]
+		    series : data
 		});
+	});
+	-->
+	$.get('${_baseUrl}/drawing/connectionInfor', {
+		"date" : "2017-12-10"
+	}).done(function(data) {
+		$('#connectionInfor').highcharts({
+		      credits:{
+		        enabled:false // 禁用版权信息
+		      },
+		      xAxis: {
+		        type: 'datetime',
+		        dateTimeLabelFormats: {
+		          minute: '%H:%M',
+		          day: '%e. %b'
+		        }
+		      },
+
+		      chart: {
+		        type: 'area',
+		        zoomType: 'x'
+		      },
+		      title: {
+		        text: '包数河流图'
+		      },
+		      subtitle: {
+		        text: ''
+		      },
+		      yAxis: {
+		        title: {
+		          text: '个'
+		        },
+		        labels: {
+		          formatter: function () {
+		            return this.value;
+		          }
+		        }
+		      },
+		      tooltip: {
+		        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} )<br/>',
+		        shared: true
+		      },
+		      plotOptions: {
+		        area: {
+		          stacking: 'percent',
+		          lineColor: '#ffffff',
+		          lineWidth: 1,
+		          marker: {
+		            lineWidth: 1,
+		            lineColor: '#ffffff'
+		          }
+		        }
+		      },
+		      series:data
+		    });
+	});
+	
+	
+	
+	$.get('${_baseUrl}/drawing/boundFlowPackageNum', {
+		"date" : "2017-12-10"
+	}).done(function(data) {
+		console.info(data);
+		$('#boundFlowPackageNum').highcharts({
+		      credits:{
+		        enabled:false // 禁用版权信息
+		      },
+		      xAxis: {
+		        type: 'datetime',
+		        dateTimeLabelFormats: {
+		          minute: '%H:%M',
+		          day: '%e. %b'
+		        }
+		      },
+
+		      chart: {
+		        type: 'area',
+		        zoomType: 'x'
+		      },
+		      title: {
+		        text: '边界流量-包数'
+		      },
+		      subtitle: {
+		        text: ''
+		      },
+		      yAxis: {
+		        title: {
+		          text: '个'
+		        },
+		        labels: {
+		          formatter: function () {
+		            return this.value;
+		          }
+		        }
+		      },
+		      tooltip: {
+		        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} )<br/>',
+		        shared: true
+		      },
+		      plotOptions: {
+		        area: {
+		          stacking: 'percent',
+		          lineColor: '#ffffff',
+		          lineWidth: 1,
+		          marker: {
+		            lineWidth: 1,
+		            lineColor: '#ffffff'
+		          }
+		        }
+		      },
+		      series:data
+		    });
 	});
 </script>
 </html>

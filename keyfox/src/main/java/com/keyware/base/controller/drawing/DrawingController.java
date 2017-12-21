@@ -7,11 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.keyware.base.listener.ZJPFileListener;
-import com.keyware.base.listener.ZJPFileMonitor;
 import com.keyware.base.service.drawing.FlowCountService;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/drawing")
@@ -32,7 +31,7 @@ public class DrawingController {
 	@RequestMapping(value = "/packageNum")
     @ResponseBody
     public JSONArray packageNum(String date) {
-        JSONArray lineDiagramEntity = flowCountService.selectFlowState(date);
+        JSONArray lineDiagramEntity = flowCountService.selectPackageNum(date);
         System.out.println(dbName);
         //TODO 
 //        ZJPFileMonitor m;
@@ -49,9 +48,26 @@ public class DrawingController {
 	
 	@RequestMapping(value = "/appScale")
     @ResponseBody
-    public JSONArray appScale(String date) {
-        JSONArray jsonArray = flowCountService.selectAppScale(date);
+    public JSONObject appScale(String date) {
+		JSONObject jsonObject = flowCountService.selectAppScale(date);
+        return jsonObject;
+    }
+	
+	@RequestMapping(value = "/connectionInfor")
+    @ResponseBody
+    public JSONArray connectionInfor(String date) {
+		JSONArray jsonArray = flowCountService.connectionInfor(date);
         return jsonArray;
     }
+	
+	
+	@RequestMapping(value = "/boundFlowPackageNum")
+    @ResponseBody
+    public JSONArray boundFlowPackageNum(String date) {
+		JSONArray jsonArray = flowCountService.boundFlowPackageNum(date);
+		System.out.println(jsonArray);
+        return jsonArray;
+    }
+	
 
 }
