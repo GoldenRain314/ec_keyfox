@@ -2,7 +2,9 @@ package com.keyware.base.service.impl.drawing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -115,7 +117,7 @@ public class FlowCountServiceImpl implements FlowCountService {
 	}
 
 	@Override
-	public JSONObject selectAppScale(String date) {
+	public JSONArray selectAppScale(String date) {
 		MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
 		Document query = new Document();
 		query.append("CulTime.TimeStamp",
@@ -123,106 +125,25 @@ public class FlowCountServiceImpl implements FlowCountService {
 		Document sort = new Document();
 		sort.append("CulTime.TimeStamp", 1.0);
 
-		Double APP_MAIL_SMTP_Bytes = 0d;
-		Double APP_RDP_Bytes = 0d;
-		Double APP_MAIL_POP_Bytes = 0d;
-		Double APP_NDPI_BITBORRENT_Bytes = 0d;
-		Double APP_MYSQL_Bytes = 0d;
-		Double APP_SSH_Bytes = 0d;
-		Double APP_SSL_Bytes = 0d;
-		Double APP_HTTP_Bytes = 0d;
-		Double APP_VOIP_Bytes = 0d;
-		Double APP_NDPI_EDONKEY_Bytes = 0d;
+		Map<String, Double> map = new HashedMap();
 
 		MongoCursor<Document> cursor = coll.find(query).sort(sort).iterator();
 		while (cursor.hasNext()) {
 			Document document = cursor.next();
 			Document ruleInfor = (Document) document.get("RuleInfor");
 			Document matchInfor = (Document) ruleInfor.get("MatchInfor");
-
-			Document APP_MAIL_SMTP = (Document) matchInfor.get("10067");
-			APP_MAIL_SMTP_Bytes += APP_MAIL_SMTP.getDouble("Bytes");
-			Document APP_RDP = (Document) matchInfor.get("10639");
-			APP_RDP_Bytes += APP_RDP.getDouble("Bytes");
-			Document APP_MAIL_POP = (Document) matchInfor.get("10101");
-			APP_MAIL_POP_Bytes += APP_MAIL_POP.getDouble("Bytes");
-			Document APP_NDPI_BITBORRENT = (Document) matchInfor.get("10393");
-			APP_NDPI_BITBORRENT_Bytes += APP_NDPI_BITBORRENT.getDouble("Bytes");
-			Document APP_MYSQL = (Document) matchInfor.get("10165");
-			APP_MYSQL_Bytes += APP_MYSQL.getDouble("Bytes");
-			Document APP_SSH = (Document) matchInfor.get("10061");
-			APP_SSH_Bytes += APP_SSH.getDouble("Bytes");
-			Document APP_SSL = (Document) matchInfor.get("10638");
-			APP_SSL_Bytes += APP_SSL.getDouble("Bytes");
-			Document APP_HTTP = (Document) matchInfor.get("10637");
-			APP_HTTP_Bytes += APP_HTTP.getDouble("Bytes");
-			Document APP_VOIP = (Document) matchInfor.get("10631");
-			APP_VOIP_Bytes += APP_VOIP.getDouble("Bytes");
-			Document APP_NDPI_EDONKEY = (Document) matchInfor.get("10221");
-			APP_NDPI_EDONKEY_Bytes += APP_NDPI_EDONKEY.getDouble("Bytes");
+			
+//			for(Document document2 : matchInfor) {
+//				String name = document2.getString("Name");
+//				Double bytes = document2.getDouble("Bytes");
+//				
+//			}
+			
 		}
 
-		JSONArray jsonArray = new JSONArray();
-		JSONObject jsonObject;
+	
 
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_MAIL_SMTP");
-		jsonObject.put("value", APP_MAIL_SMTP_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_RDP");
-		jsonObject.put("value", APP_RDP_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_MAIL_POP");
-		jsonObject.put("value", APP_MAIL_POP_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_NDPI_BITBORRENT");
-		jsonObject.put("value", APP_NDPI_BITBORRENT_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_MYSQL");
-		jsonObject.put("value", APP_MYSQL_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_SSH");
-		jsonObject.put("value", APP_SSH_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_SSL");
-		jsonObject.put("value", APP_SSL_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_HTTP");
-		jsonObject.put("value", APP_HTTP_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_VOIP");
-		jsonObject.put("value", APP_VOIP_Bytes);
-		jsonArray.add(jsonObject);
-
-		jsonObject = new JSONObject();
-		jsonObject.put("name", "APP_NDPI_EDONKEY");
-		jsonObject.put("value", APP_NDPI_EDONKEY_Bytes);
-		jsonArray.add(jsonObject);
-
-		JSONObject data = new JSONObject();
-		data.put("name", "应用比例");
-		data.put("type", "pie");
-		data.put("radius", "55%");
-		data.put("center", "['50%', '60%']");
-		data.put("data", jsonArray);
-
-		return data;
+		return null;
 	}
 
 	@Override
@@ -300,7 +221,7 @@ public class FlowCountServiceImpl implements FlowCountService {
 
 			Document intraNet = (Document) document.get("IntraNet");
 			Document toIntra = (Document) intraNet.get("ToIntra");
-			objects[1] = toIntra.get("PacketNum");	
+			objects[1] = toIntra.get("PacketNum");
 			in.add(objects);
 
 			Object[] objects2 = new Object[2];
@@ -325,6 +246,275 @@ public class FlowCountServiceImpl implements FlowCountService {
 		jsonArray.add(jsonObject);
 
 		return jsonArray;
+	}
+
+	@Override
+	public JSONArray boundFlowBytes(String date) {
+		MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
+		Document query = new Document();
+		query.append("CulTime.TimeStamp",
+				new Document().append("$gte", date + " 00:00:00").append("$lte", date + " 23:59:59"));
+		Document sort = new Document();
+		sort.append("CulTime.TimeStamp", 1.0);
+		List<Object[]> in = new ArrayList<>();
+		List<Object[]> out = new ArrayList<>();
+		Block<Document> processBlock = document -> {
+			Object[] objects = new Object[2];
+			Document culTime = (Document) document.get("CulTime");
+			objects[0] = culTime.get("TimeStamp").toString();
+
+			Document intraNet = (Document) document.get("IntraNet");
+			Document toIntra = (Document) intraNet.get("ToIntra");
+			objects[1] = toIntra.get("PacketBytes");
+			in.add(objects);
+
+			Object[] objects2 = new Object[2];
+			objects2[0] = culTime.get("TimeStamp");
+			Document fromIntra = (Document) intraNet.get("FromIntra");
+			objects2[1] = fromIntra.getDouble("PacketBytes");
+			out.add(objects2);
+		};
+		coll.find(query).sort(sort).forEach(processBlock);
+
+		JSONArray jsonArray = new JSONArray();
+		JSONObject jsonObject;
+
+		jsonObject = new JSONObject();
+		jsonObject.put("name", "IN");
+		jsonObject.put("data", in.toArray());
+		jsonArray.add(jsonObject);
+
+		jsonObject = new JSONObject();
+		jsonObject.put("name", "OUT");
+		jsonObject.put("data", out.toArray());
+		jsonArray.add(jsonObject);
+
+		return jsonArray;
+	}
+
+	@Override
+	public JSONArray exceptionFlow(String date) {
+		MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
+		Document query = new Document();
+		query.append("CulTime.TimeStamp",
+				new Document().append("$gte", date + " 00:00:00").append("$lte", date + " 23:59:59"));
+		Document sort = new Document();
+		sort.append("CulTime.TimeStamp", 1.0);
+		List<Object[]> in = new ArrayList<>();
+		List<Object[]> out = new ArrayList<>();
+		Block<Document> processBlock = document -> {
+			Object[] objects = new Object[2];
+			Document culTime = (Document) document.get("CulTime");
+			objects[0] = culTime.get("TimeStamp").toString();
+
+			Document intraNet = (Document) document.get("IntraNet");
+			Document toIntra = (Document) intraNet.get("BothIntra");
+			objects[1] = toIntra.get("PacketBytes");
+			in.add(objects);
+
+			Object[] objects2 = new Object[2];
+			objects2[0] = culTime.get("TimeStamp");
+			Document fromIntra = (Document) intraNet.get("NoIntra");
+			objects2[1] = fromIntra.getDouble("PacketBytes");
+			out.add(objects2);
+
+		};
+		coll.find(query).sort(sort).forEach(processBlock);
+
+		JSONArray jsonArray = new JSONArray();
+		JSONObject jsonObject;
+
+		jsonObject = new JSONObject();
+		jsonObject.put("name", "双向内部IP");
+		jsonObject.put("data", in.toArray());
+		jsonArray.add(jsonObject);
+
+		jsonObject = new JSONObject();
+		jsonObject.put("name", "双向外部IP");
+		jsonObject.put("data", out.toArray());
+		jsonArray.add(jsonObject);
+
+		return jsonArray;
+	}
+
+	@Override
+	public JSONArray packageIPNum(String date) {
+		MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
+		Document query = new Document();
+		query.append("CulTime.TimeStamp",
+				new Document().append("$gte", date + " 00:00:00").append("$lte", date + " 23:59:59"));
+		Document sort = new Document();
+		sort.append("CulTime.TimeStamp", 1.0);
+
+		Map<String, List<Object[]>> reMap = new HashedMap();
+		Map<String, List<Object[]>> refromMap = new HashedMap();
+		
+		Block<Document> processBlock = document -> {
+			
+			Document culTime = (Document) document.get("CulTime");
+			//获取时间
+			String dateString = culTime.get("TimeStamp").toString();
+			
+			//上一条数据
+			Map<String,Double> numMap = getMap(coll,dateString,"To_Num");
+			Map<String,Double> fromMap = getMap(coll,dateString,"From_Num");
+			
+			Document intraNet = (Document) document.get("IntraNet");
+			//全部数据
+			List<Document> lists = intraNet.get("Packet",new ArrayList());
+			
+			for(Document documents : lists) {
+				
+				Object[] objects = new Object[2];
+				objects[0] = dateString;
+				String ip = documents.getString("IP");
+				//TODO 健壮性
+				double theLastOneNum = numMap.get(ip) == null ? 0d : numMap.get(ip) ;
+				objects[1] = documents.getDouble("To_Num") - theLastOneNum;
+				
+				Object[] object2 = new Object[2];
+				object2[0] = dateString;
+				//TODO 健壮性
+				double theLastOneFromNum = fromMap.get(ip) == null ? 0d : fromMap.get(ip) ;
+				object2[1] = documents.getDouble("From_Num") - theLastOneFromNum;
+				
+				List<Object[]> list = reMap.get(ip);
+				if(list == null) {
+					list = new ArrayList();
+					reMap.put(ip, list);
+				}
+				list.add(objects);
+				
+				List<Object[]> listFrom = refromMap.get(ip);
+				if(listFrom == null) {
+					listFrom = new ArrayList();
+					refromMap.put(ip, listFrom);
+				}
+				listFrom.add(objects);
+			}
+		};
+		coll.find(query).sort(sort).forEach(processBlock);
+		
+		JSONArray jsonArray = new JSONArray();
+		//遍历Map
+		for (String key : reMap.keySet()) {  
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("name", key + "(IN)");
+			jsonObject.put("data", reMap.get(key).toArray());
+			jsonArray.add(jsonObject);
+		}  
+		
+		for (String key : refromMap.keySet()) {  
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("name", key + "(OUT)");
+			jsonObject.put("data", refromMap.get(key).toArray());
+			jsonArray.add(jsonObject);
+		}
+		return jsonArray;
+	}
+
+	@Override
+	public JSONArray packageIPBytes(String date) {
+		MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
+		Document query = new Document();
+		query.append("CulTime.TimeStamp",
+				new Document().append("$gte", date + " 00:00:00").append("$lte", date + " 23:59:59"));
+		Document sort = new Document();
+		sort.append("CulTime.TimeStamp", 1.0);
+
+		Map<String, List<Object[]>> reMap = new HashedMap();
+		Map<String, List<Object[]>> refromMap = new HashedMap();
+		
+		Block<Document> processBlock = document -> {
+			
+			Document culTime = (Document) document.get("CulTime");
+			//获取时间
+			String dateString = culTime.get("TimeStamp").toString();
+			
+			//上一条数据
+			Map<String,Double> numMap = getMap(coll,dateString,"From_Bytes");
+			Map<String,Double> fromMap = getMap(coll,dateString,"To_Bytes");
+			
+			Document intraNet = (Document) document.get("IntraNet");
+			//全部数据
+			List<Document> lists = intraNet.get("Packet",new ArrayList());
+			
+			for(Document documents : lists) {
+				
+				Object[] objects = new Object[2];
+				objects[0] = dateString;
+				String ip = documents.getString("IP");
+				//TODO 健壮性
+				double theLastOneNum = numMap.get(ip) == null ? 0d : numMap.get(ip) ;
+				objects[1] = documents.getDouble("From_Bytes") - theLastOneNum;
+				
+				Object[] object2 = new Object[2];
+				object2[0] = dateString;
+				//TODO 健壮性
+				double theLastOneFromNum = fromMap.get(ip) == null ? 0d : fromMap.get(ip) ;
+				object2[1] = documents.getDouble("To_Bytes") - theLastOneFromNum;
+				
+				List<Object[]> list = reMap.get(ip);
+				if(list == null) {
+					list = new ArrayList();
+					reMap.put(ip, list);
+				}
+				list.add(objects);
+				
+				List<Object[]> listFrom = refromMap.get(ip);
+				if(listFrom == null) {
+					listFrom = new ArrayList();
+					refromMap.put(ip, listFrom);
+				}
+				listFrom.add(objects);
+			}
+		};
+		coll.find(query).sort(sort).forEach(processBlock);
+		
+		JSONArray jsonArray = new JSONArray();
+		//遍历Map
+		for (String key : reMap.keySet()) {  
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("name", key + "(IN)");
+			jsonObject.put("data", reMap.get(key).toArray());
+			jsonArray.add(jsonObject);
+		}  
+		
+		for (String key : refromMap.keySet()) {  
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("name", key + "(OUT)");
+			jsonObject.put("data", refromMap.get(key).toArray());
+			jsonArray.add(jsonObject);
+		}
+		return jsonArray;
+	}
+
+	private Map<String, Double> getMap(MongoCollection<Document> coll, String date, String documentKey) {
+		Document query = new Document();
+		query.append("CulTime.TimeStamp", new Document().append("$lt", date));
+
+		Document sort = new Document();
+		sort.append("_id", -1.0);
+
+		int limit = 1;
+
+		Map<String, Double> map = new HashedMap();
+
+		Block<Document> processBlock = new Block<Document>() {
+			@Override
+			public void apply(final Document document) {
+				Document intraNet = (Document) document.get("IntraNet");
+				// 全部数据
+				List<Document> lists = intraNet.get("Packet", new ArrayList());
+				for (Document documents : lists) {
+					map.put(documents.getString("IP"), documents.getDouble(documentKey));
+				}
+			}
+		};
+
+		coll.find(query).sort(sort).limit(limit).forEach(processBlock);
+
+		return map;
 	}
 
 }

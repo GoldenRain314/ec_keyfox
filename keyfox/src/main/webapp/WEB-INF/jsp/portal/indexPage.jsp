@@ -73,6 +73,16 @@
             });
         }
     });
+    $(function() {
+    	   if (navigator.userAgent.toLowerCase().indexOf("chrome") >= 0) {
+    	      $(window).load(function(){
+    	         $('input:not(input[type=submit])').each(function(){
+    	         var outHtml = this.outerHTML;
+    	         $(this).append(outHtml);
+    	         });
+    	      });
+    	   }
+    	});
 </script>
 
 

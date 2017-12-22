@@ -30,7 +30,7 @@
             }
         };
         var zNodes =[
-            { id:1, pId:0, name:"整体流量","menuUrl":"right_container/zhengtiliuliang"},
+            { id:1, pId:0, name:"整体流量","menuUrl":"right_container/whole_flow"},
             { id:2, pId:0, name:"DDOS状态","menuUrl":"right_container/DDOS"},
         ];
         $(document).ready(function(){
@@ -69,7 +69,7 @@
         </div>
     </div>
     <div id="main-right" class="main_right">
-        <iframe id="templatelist" width='100%' height='100%' src="${_baseUrl}/tzController/right_container/zhengtiliuliang" frameborder="0">
+        <iframe id="templatelist" width='100%' height='100%' src="${_baseUrl}/tzController/right_container/whole_flow" frameborder="0">
         </iframe>
     </div>
 </div>

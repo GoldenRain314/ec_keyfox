@@ -25,7 +25,7 @@
             }
         };
         var zNodes =[
-            { id:2, pId:0, name:"添加规则","menuUrl":"right_container/tianjiaguize"},
+            { id:2, pId:0, name:"添加规则","menuUrl":"/addRule"},
         ];
         $(document).ready(function(){
             $.fn.zTree.init($("#treeDemo"), setting, zNodes);
@@ -34,7 +34,11 @@
             var zTree = $.fn.zTree.getZTreeObj("treeDemo");
             zTree.expandNode(treeNode);
             var div = document.getElementById("templatelist");
-            div.src ="${_baseUrl}/tzController/"+treeNode.menuUrl;
+            if(treeNode.name == "添加规则"){
+            	div.src ="${_baseUrl}/ruleController/"+treeNode.menuUrl;
+            }else{
+	            div.src ="${_baseUrl}/tzController/"+treeNode.menuUrl;
+            }
         }
     </script>
     <style type="text/css">

@@ -22,7 +22,7 @@ public interface  FlowCountService {
      * @param date
      * @return
      */
-    JSONObject selectAppScale(String date);
+    JSONArray selectAppScale(String date);
     
     /**
      * 获取连接信息
@@ -37,8 +37,23 @@ public interface  FlowCountService {
     JSONArray boundFlowPackageNum(String date);
     
     /**
-     * 边界流量-包数
+     * 边界流量-字节数
      */
-    JSONArray boundFlowPackageNum(String date);
+    JSONArray boundFlowBytes(String date);
+    
+    /**
+     * 异常流量内部IP
+     */
+    JSONArray exceptionFlow(String date);
+    
+    /**
+     * 各网段包数 
+     */
+    JSONArray packageIPNum(String date);
+    
+    /**
+     * 个网段字节数 
+     */
+    JSONArray packageIPBytes(String date);
     
 }

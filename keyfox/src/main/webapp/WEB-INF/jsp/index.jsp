@@ -28,7 +28,7 @@
                         <em></em><span></span>
                     </div>
                     <ul>
-                        <li id='t-d-cancel'>注销</li>
+                        <li id='t-d-cancel'><a href="${_baseUrl}/logout" style="">注销</a></li>
                         <li onclick='alterPwd()'>修改密码</li>
                         <li>退出</li>
                     </ul>

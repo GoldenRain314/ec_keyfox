@@ -32,7 +32,6 @@ public class DrawingController {
     @ResponseBody
     public JSONArray packageNum(String date) {
         JSONArray lineDiagramEntity = flowCountService.selectPackageNum(date);
-        System.out.println(dbName);
         //TODO 
 //        ZJPFileMonitor m;
 //        try {
@@ -48,9 +47,9 @@ public class DrawingController {
 	
 	@RequestMapping(value = "/appScale")
     @ResponseBody
-    public JSONObject appScale(String date) {
-		JSONObject jsonObject = flowCountService.selectAppScale(date);
-        return jsonObject;
+    public JSONArray appScale(String date) {
+		JSONArray jsonArray = flowCountService.selectAppScale(date);
+        return jsonArray;
     }
 	
 	@RequestMapping(value = "/connectionInfor")
@@ -65,9 +64,36 @@ public class DrawingController {
     @ResponseBody
     public JSONArray boundFlowPackageNum(String date) {
 		JSONArray jsonArray = flowCountService.boundFlowPackageNum(date);
-		System.out.println(jsonArray);
         return jsonArray;
     }
 	
-
+	@RequestMapping(value = "/boundFlowBytes")
+    @ResponseBody
+    public JSONArray boundFlowBytes(String date) {
+		JSONArray jsonArray = flowCountService.boundFlowBytes(date);
+        return jsonArray;
+    }
+	
+	
+	@RequestMapping(value = "/exceptionFlow")
+    @ResponseBody
+    public JSONArray exceptionFlow(String date) {
+		JSONArray jsonArray = flowCountService.exceptionFlow(date);
+        return jsonArray;
+    }
+	
+	
+	@RequestMapping(value = "/packageIPNum")
+    @ResponseBody
+    public JSONArray packageIPNum(String date) {
+		JSONArray jsonArray = flowCountService.packageIPNum(date);
+        return jsonArray;
+    }
+	
+	@RequestMapping(value = "/packageIPBytes")
+    @ResponseBody
+    public JSONArray packageIPBytes(String date) {
+		JSONArray jsonArray = flowCountService.packageIPBytes(date);
+        return jsonArray;
+    }
 }

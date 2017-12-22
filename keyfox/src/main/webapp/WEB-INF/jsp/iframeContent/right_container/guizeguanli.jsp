@@ -23,16 +23,54 @@
         .t2{float: left;background:url("${_resources}/TZ/img/2.png") no-repeat;width: 50%;height:210px}
         .t3{float: left;background:url("${_resources}/TZ/img/3.png") no-repeat;width: 50%;height:210px}
     </style>
+    <script type="text/javascript">
+    	function searchRule(){
+    		var param = $("#param").val();
+    		if(param=="搜索需要查询的规则ID"){
+    			layer.msg("请先输入要查询的规则ID");
+    			return;
+    		}
+  		  	$.ajax({
+    			url:"${_baseUrl}/ruleController/searchRuleById",
+                type:"post",
+                async: false, 
+                dataType:"json", 
+                data:{"param":param},
+                success:function(data){
+                    if(data.message=='1'){
+                    	//ruleData
+                    	var ruleStr ="";
+                    	var jsonObj=eval("("+data.data+")");
+                    	$.each(jsonObj,function(index,item){
+                    		ruleStr+="<tr>";
+                    		ruleStr+="<td><a href='${_baseUrl}/ruleController/checkRule?app_id="+item.appId+"'>"+item.appId+"</a></td>";
+                    		ruleStr+="<td>"+item.name+"</td>";
+                    		ruleStr+="<td>"+item.reverse+"</td>";
+                    		ruleStr+="<td>"+item.status+"</td>";
+                    		ruleStr+="</tr>";
+                    	})
+                    	$("#ruleData").html(ruleStr);
+                    }else{
+                   	 	layer.msg("不存在该条数据");
+                    }
+                },
+                error:function(e){
+                    layer.msg("查询失败");
+                }
+    		})
+    	}
+    </script>
 </head>
 <body>
 <div class="main">
     <div class="head">
         <div class="head_left">
-            <input type="text" placeholder="搜索需要查询的规则ID"/>
+        <!-- placeholder="搜索需要查询的规则ID" -->
+            <input type="text"   value="搜索需要查询的规则ID" id="param" name="param" />
         </div>
         <div class="head_right">
-            <a href="javascript:;">查看规则</a>
-            <a href="javascript:;">添加规则</a>
+            <a href="javascript:;" onclick="searchRule();">查询规则</a>
+            <a href="${_baseUrl}/ruleController/addRule">添加规则</a>
         </div>
     </div>
     <div style="overflow: auto; width:98%;margin: auto;">
@@ -45,37 +83,17 @@
                 <th>规则状态</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>3007</td>
-                <td>Pro_HTTP</td>
-                <td>IPRuleTest</td>
-                <td>running</td>
-            </tr>
-            <tr>
-                <td>3007</td>
-                <td>Pro_HTTP</td>
-                <td>IPRuleTest</td>
-                <td>running</td>
-            </tr>
-            <tr>
-                <td>3007</td>
-                <td>Pro_HTTP</td>
-                <td>IPRuleTest</td>
-                <td>running</td>
-            </tr>
-            <tr>
-                <td>3007</td>
-                <td>Pro_HTTP</td>
-                <td>IPRuleTest</td>
-                <td>running</td>
-            </tr>
-            <tr>
-                <td>3007</td>
-                <td>Pro_HTTP</td>
-                <td>IPRuleTest</td>
-                <td>running</td>
-            </tr>
+            <tbody id="ruleData">
+            
+            <c:forEach items="${ruleList}" var="rule">
+            	<tr>
+            	<td><a href="${_baseUrl}/ruleController/checkRule?app_id=${rule.appId}"> ${rule.appId}</a> </td>
+            	<td>${rule.name}</td>
+            	<td>${rule.msg}</td>
+            	<td>${rule.status}</td>
+            	</tr>
+            </c:forEach>
+            
             </tbody>
         </table>
     </div>

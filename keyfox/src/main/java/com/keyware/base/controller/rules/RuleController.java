@@ -1,10 +1,8 @@
 package com.keyware.base.controller.rules;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,275 +12,310 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.commons.io.FileUtils;
+import org.codehaus.groovy.transform.stc.StaticTypeCheckingSupport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.keyware.base.controller.BaseController;
 import com.keyware.base.repository.entity.rules.BasicRule;
+import com.keyware.base.service.itf.rules.BasicRuleService;
 import com.keyware.base.task.util.AjaxMessage;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/ruleController")
 public class RuleController extends BaseController {
 	
-	/***
-	 * @author 李涛
-	 * @describe  将规则数据转换成json文件
-	 * @param BasicRule
+	@Resource
+	public BasicRuleService basicRuleService;
+	
+	
+	/**
+	 * @author litao
+	 * @describe 保存和修改规则文件
+	 * @param basicRule
+	 * @return
 	 */
-	@RequestMapping(value="/ruleTitleTransfromJson",method=RequestMethod.POST)
-	public AjaxMessage  ruleTitleTransformJsonFile(@ModelAttribute BasicRule basicRule ){
-		AjaxMessage ajax = new AjaxMessage();
-		Map<String,Object>  dataMap = new HashMap<String,Object>();
-		
-		dataMap.put("APPID", basicRule.getAppId());
-		dataMap.put("Name", basicRule.getName());
-		dataMap.put("MSG", basicRule.getMsg());
-		//保留信息
-		dataMap.put("Reverse","ReverseInfor");
-		dataMap.put("Level", basicRule.getLevel());
-		//是否更新连接的APP，暂时未启用 ,固定为1
-		dataMap.put("ReNewAPP", "1");
-		dataMap.put("Type", "100");
-		//响应方式
-		dataMap.put("respond", "2");
-		//规则转换模式
-		dataMap.put("Trance", basicRule.getTrance());
-
-		//存储规则参数信息和id
-		dataMap.put("rules", new ArrayList<Object>());
-		JSONObject jsonObject = JSONObject.fromObject(dataMap);
-		String str = request.getRealPath("rules"); 
-		File file = new File(str+File.separator+basicRule.getAppId()+".json");
-		FileWriter fileWriter = null;
-		try {
-			try {
-				if(!file.exists()){
-					file.createNewFile();
-				}
-				fileWriter = new FileWriter(file);
-				fileWriter.write(jsonObject.toString());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+	@RequestMapping(value="/saveRuleAndCreateJsonFile",method=RequestMethod.POST)
+	public ModelAndView saveRuleAndCreateJsonFile(@ModelAttribute BasicRule basicRule){
+		ModelAndView  modelAndView  = new ModelAndView("iframeContent/right_container/guizeguanli");
+		JSONObject jsonFile = new JSONObject();
+		jsonFile.put("APPID", basicRule.getAppId());
+		jsonFile.put("Name", basicRule.getName());
+		jsonFile.put("SaveBytes", basicRule.getSaveBytes());
+		jsonFile.put("Trance", basicRule.getTrance());
+		jsonFile.put("Respond", 2);
+		jsonFile.put("ReNewAPP", 1);
+		jsonFile.put("Type", 100);
+		jsonFile.put("Reverse", basicRule.getReverse());
+		jsonFile.put("Level", basicRule.getLevel());
+		jsonFile.put("MSG","");
+		String rulesType ="";
+		ArrayList<Object> rulesList = new ArrayList<Object>();
+		//获取规则数据
+		Map<String,Object> rulesMap = new HashMap<String,Object>();
+		if(!basicRule.getiP_rule().equals("")){
+			rulesType+="IP_Rule,";
+			JSONObject ipObject= JSONObject.fromObject(basicRule.getiP_rule());
+			JSONArray jsonArray = JSONArray.fromObject(ipObject.get("IP_Rule"));
+			jsonFile.put("IP_Rule", jsonArray);
+			for (Object object : jsonArray) {
+				rulesMap.put("id", basicRule.getAppId()+"_"+rulesList);
+				rulesMap.put("data", object);
+				rulesMap.put("type", "IP_Rule");
+				rulesList.add(rulesMap);
 			}
+			
+		}
+		if(!basicRule.getKey_rule().equals("")){
+			rulesType+="Key_Rule,";
+			JSONObject keyObject= JSONObject.fromObject(basicRule.getKey_rule());
+			JSONArray jsonArray = JSONArray.fromObject(keyObject.get("Key_Rule"));
+			jsonFile.put("Key_Rule", jsonArray);
+			for (Object object : jsonArray) {
+				rulesMap.put("id", basicRule.getAppId()+"_"+rulesList);
+				rulesMap.put("data", object);
+				rulesMap.put("type", "Key_Rule");
+				rulesList.add(rulesMap);
+			}
+		}
+		if(!basicRule.getRegex_rule().equals("")){
+			rulesType+="Regex_Rule,";
+			JSONObject regexObject= JSONObject.fromObject(basicRule.getRegex_rule());
+			JSONArray jsonArray = JSONArray.fromObject(regexObject.get("Regex_Rule"));
+			jsonFile.put("Regex_Rule", jsonArray);
+			for (Object object : jsonArray) {
+				rulesMap.put("id", basicRule.getAppId()+"_"+rulesList);
+				rulesMap.put("data", object);
+				rulesMap.put("type", "Regex_Rule");
+				rulesList.add(rulesMap);
+			}
+		}
+		if(!basicRule.getLib_rule().equals("")){
+			rulesType+="Lib_Rule,";
+			JSONObject libObject= JSONObject.fromObject(basicRule.getLib_rule());
+			JSONArray jsonArray = JSONArray.fromObject(libObject.get("Lib_Rule"));
+			jsonFile.put("Lib_Rule", jsonArray);
+			for (Object object : jsonArray) {
+				rulesMap.put("id", basicRule.getAppId()+"_"+rulesList);
+				rulesMap.put("data", object);
+				rulesMap.put("type", "Lib_Rule");
+				rulesList.add(rulesMap);
+			}
+		}
+		if(!basicRule.getDomain_rule().equals("")){
+			rulesType+="Domain_Rule,";
+			JSONObject domainObject= JSONObject.fromObject(basicRule.getDomain_rule());
+			JSONArray jsonArray = JSONArray.fromObject(domainObject.get("Domain_Rule"));
+			jsonFile.put("Domain_Rule", jsonArray);
+			for (Object object : jsonArray) {
+				rulesMap.put("id", basicRule.getAppId()+"_"+rulesList);
+				rulesMap.put("data", object);
+				rulesMap.put("type", "Domain_Rule");
+				rulesList.add(rulesMap);
+			}
+		}
+		if(!basicRule.getProtocol_Rule().equals("")){
+			rulesType+="Protocol_Rule,";
+			JSONObject proObject= JSONObject.fromObject(basicRule.getProtocol_Rule());
+			JSONArray jsonArray = JSONArray.fromObject(proObject.get("Protocol_Rule"));
+			jsonFile.put("Protocol_Rule", jsonArray);
+			for (Object object : jsonArray) {
+				rulesMap.put("id", basicRule.getAppId()+"_"+rulesList);
+				rulesMap.put("data", object);
+				rulesMap.put("type", "Protocol_Rule");
+				rulesList.add(rulesMap);
+			}
+		}
+		
+		jsonFile.put("rules", JSONArray.fromObject(rulesList));
+		//保存修改规则数据和规则文件
+		basicRule.setStatus("running");
+		basicRule.setRulesType(rulesType);
+		if(basicRuleService.selectById(basicRule.getAppId()) !=null){
+			basicRuleService.updateByPrimaryKey(basicRule);
+		}else{
+			basicRuleService.insert(basicRule);
+		}
+		String ruleFileName = basicRule.getAppId()+".json"; 
+		File newRuleFile= new File(request.getServletContext().getRealPath("resources/files/rules")+File.separator+ruleFileName);
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(newRuleFile);
+			writer.write(jsonFile.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{
-			if(fileWriter !=null){
-				try {
-					fileWriter.flush();
-					fileWriter.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			try {
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
-		ajax.setData(jsonObject.toString());
-		return ajax;
-		
+		modelAndView.addObject("ruleList", JSONArray.fromObject(basicRuleService.selectAllRules()));
+		return modelAndView;
 	}
 	
-	/***
-	 * @author 李涛
-	 * @describe 将规则参数转化到规则的json文件中
-	 * @return AJAX
-	 */
-	@RequestMapping(value="/ruleContextTransformJsonFile",method=RequestMethod.POST)
-	public  AjaxMessage   ruleContextTransformJsonFile(){
-		AjaxMessage  ajax = new AjaxMessage();
-		Map<String,Object>  dataMap = new HashMap<String,Object>();
-		Map<String,Object> map = new HashMap<String,Object>();
-		Map<String,Object> rulesMap = new HashMap<String,Object>();
-		String  ruleType = request.getParameter("ruleType");
-		String fileName ="";
-		JSONObject obj = null;
-		
-		String rule_id = request.getParameter("rule_id");
-		int index = rule_id.indexOf("_");
-		fileName = rule_id.substring(0, index)+".json";
-		String line = "";
-		try {
-			File file = new File(request.getServletContext().getRealPath("rules")+File.separator+fileName);
-			if( !file.exists()){
-				file.createNewFile();
-			}
-			BufferedReader  bufRead = new BufferedReader(new FileReader(file));
-			try {
-				while((line=bufRead.readLine())!= null){
-					line=bufRead.readLine();
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		obj = JSONObject.fromObject(line);
-		//判断规则类型，加入规则参数数据
-		//key_rule
-		if(ruleType.equals("key_rule")){
-			String pro_id =request.getParameter("pro_id");
-			String keyword =request.getParameter("keyware");
-			String IsCaseSensive = request.getParameter("iscasesensive");
-			map.put("ProID", pro_id);
-			map.put("Keyword",keyword);
-			map.put("IsCaseSensive", IsCaseSensive);
-			dataMap.put("Key_Rule", new ArrayList<Object>().add(map));
-		}
-		
-		//Ip_Rule
-		if(ruleType.equals("IP_Rule")){
-			//IPv4/IPv6
-			String v4_v6 = request.getParameter("v4_v6");
-			if(v4_v6.equals("0")){
-				v4_v6="IPV4";
-			}else{
-				v4_v6="IPV6";
-			}
-			String ip_address = request.getParameter("ip_address");
-			String port_high = request.getParameter("port_low");
-			String port_low = request.getParameter("port_low");
-			map.put(v4_v6,ip_address);
-			Map<String,String> portMap = new HashMap<String,String>();
-			portMap.put("LowPort", port_low);
-			portMap.put("HightPort", port_high);
-			//参考数据
-			portMap.put("Property", "2");
-			portMap.put("Sign", "1");
-			map.put("Port_Rule",portMap);
-			dataMap.put("IP_Rule", new ArrayList<Object>().add(map));
-		}
-		//Regex_Rule
-		if(ruleType.equals("Regex_Rule")){
-			String Regex = request.getParameter("regex");
-			String pro_id = request.getParameter("proId");
-			String globalMatch = request.getParameter("global_match");
-			//是否全局
-			map.put("Regex", Regex);
-			map.put("ProID", pro_id);
-			if(globalMatch.equals("1")){
-				map.put("Property", true);
-			}else{
-				map.put("Property", false);
-			}
-			dataMap.put("Regex_Rule", new ArrayList<Object>().add(map));
-		}
-		
-		//Domain_Rule
-		if(ruleType.equals("Domain_Rule")){
-			String type = request.getParameter("type");
-			String Domain = request.getParameter("domain");
-			map.put("Domain", Domain);
-			map.put("Type", type);
-			dataMap.put("Domain_Rule", new ArrayList<Object>().add(map));
-		}
-		
-		//Protocol_Rule
-		if(ruleType.equals("Protocol_Rule")){
-			String port_high = request.getParameter("port_low");
-			String port_low = request.getParameter("port_low");
-			String pro_id = request.getParameter("pro_id");
-			Map<String,String> portMap = new HashMap<String,String>();
-			portMap.put("LowPort", port_low);
-			portMap.put("HightPort", port_high);
-			map.put("ProID", pro_id);
-			//参考数据
-			portMap.put("Property", "2");
-			portMap.put("Sign", "1");
-			map.put("Port_Rule",portMap);
-			dataMap.put("Protocol_Rule", new ArrayList<Object>().add(map));
-		}
-		
-		//Lib_Rule
-		if(ruleType.endsWith("Lib_Rule")){
-			//保存上传文件之后，再生成规则参数
-			//上传路径
-			String libName = "";
-			String savePath = request.getServletContext().getRealPath("/WEB-INF/upload");
-			File file = new File(savePath);
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			upload.setHeaderEncoding("UTF-8"); 
-			try {
-				List<FileItem> list = upload.parseRequest(request);
-				for(FileItem item : list){
-					if(item.isFormField()){
-						String name = item.getFieldName();
-						try {
-							String value = item.getString("UTF-8");
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						String filename = item.getName();
-						 if(filename==null || filename.trim().equals("")){
-							 continue;
-						 }
-						 filename = filename.substring(filename.lastIndexOf("\\")+1);
-						 try {
-							InputStream in = item.getInputStream();
-							FileOutputStream out = new FileOutputStream(savePath + "\\" + filename);
-							byte buffer[] = new byte[1024];
-							int len = 0;
-							while((len=in.read(buffer))>0){
-								out.write(buffer, 0, len);
-							}
-							in.close();
-							out.close();
-							item.delete();
-						 } catch (IOException e) {
-							e.printStackTrace();
-						}
-						 
-					}
-				}
-			} catch (FileUploadException e) {
-				e.printStackTrace();
-			}
-			
-			String  pro_id = request.getParameter("pro_id");
-			map.put("Lib", libName);
-			map.put("ProID", pro_id);
-			dataMap.put("Lib_Rule", new ArrayList<Object>().add(map));
-		}
-		
-		//添加规则参数
-		if(obj.get(ruleType)!=null){
-			ArrayList<Object> ruleArrayList=(ArrayList<Object>) obj.get(ruleType);
-			ruleArrayList.add(map);
-			obj.put(ruleType, ruleArrayList);
-		}else{
-			obj.putAll(dataMap);
-		}	
-		
-		
-		//修改rules信息
-		ArrayList<String> rules = (ArrayList<String>) obj.get("rules");
-		rulesMap.put("type", ruleType);
-		rulesMap.put("id",rule_id);
-		rulesMap.put("data", map);
-		obj.put(rules, rulesMap);
-		ajax.setData(JSONObject.fromObject(rulesMap).toString());
-		return ajax;
-		
-	}
+	
+	
+	
 	
 	/***
 	 * @author litao
-	 * @describe 跳转到规则添加页面
-	 * @return
+	 * @describe 新增规则
+	 * 跳转到规则添加页面
+	 * @return  modelAndView
 	 */
 	@RequestMapping(value="/addRule")
-	public String  addRule(){
-		return "basicRules/addRule";
+	public ModelAndView  addRule(){
+		ModelAndView modelAndView = new ModelAndView("iframeContent/right_container/tianjiaguize");
+		List<BasicRule> rules=basicRuleService.selectAllRules();
+		if(rules.size() ==0){
+			modelAndView.addObject("app_id",1);
+		}else{
+			modelAndView.addObject("app_id",Integer.valueOf(rules.get(rules.size()-1).getAppId())+1);
+		}
+		return modelAndView;
+		
+	}
+	
+	/***
+	 * @author litao 
+	 * @describe  查看规则信息
+	 * @param app_id 规则ID
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value="/checkRule" ) 
+	public ModelAndView checkRule(){
+		ModelAndView modelAndView  = new ModelAndView("iframeContent/right_container/tianjiaguize");
+		String app_id = request.getParameter("app_id");
+		String ruleFileName = app_id+".json"; 
+		File newRuleFile= new File(request.getServletContext().getRealPath("resources/files/rules")+File.separator+ruleFileName);
+		try {
+			String jsonFileStr = FileUtils.readFileToString(newRuleFile, "UTF-8");
+			modelAndView.addObject("app_id",app_id) ;
+			modelAndView.addObject("ruleObject",JSONObject.fromObject(jsonFileStr)) ;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	
+	/***
+	 * @author 李涛
+	 * @describe  删除数据和对应的规则文件
+	 * @return
+	 */
+	@RequestMapping(value="/delRuleData",method=RequestMethod.POST,produces = "application/json; charset=utf-8")
+	public AjaxMessage delRuleData(){
+		AjaxMessage ajax = new  AjaxMessage();
+		String  app_id = request.getParameter("appId");
+		String ruleFileName = app_id+".json"; 
+		File ruleFile= new File(request.getServletContext().getRealPath("resources/files/rules")+File.separator+ruleFileName);
+		try {
+			basicRuleService.deleteRule(app_id);
+			ruleFile.delete();
+			ajax.setMessage("1");
+		} catch (Exception e) {
+			ajax.setMessage("0");
+		}	
+		return ajax;
+	}
+	
+	
+	/***
+	 * @author litao
+	 * @describe  删除规则参数信息
+	 * @param seq 同类规则参数的序号
+	 * @return ajax
+	 */
+	@RequestMapping(value="/delRuleParaInfo",method=RequestMethod.POST,produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public AjaxMessage delRuleParaInfo(){
+		AjaxMessage ajax = new AjaxMessage();
+		String app_id = request.getParameter("appId");
+		String ruleType = request.getParameter("ruleType");
+		String seq = request.getParameter("seq");
+		JSONArray jsonArray = null;
+		JSONObject fileObj = null;
+		String ruleFileName = app_id+".json"; 
+		File newRuleFile= new File(request.getServletContext().getRealPath("resources/files/rules")+File.separator+ruleFileName);
+		try {
+			String jsonFileStr = FileUtils.readFileToString(newRuleFile, "UTF-8");
+			fileObj = JSONObject.fromObject(jsonFileStr);
+			//从对应的规则文件中读取规则参数数据
+			jsonArray = JSONArray.fromObject(fileObj.get(ruleType));
+			//当删除的规则类型为Lib时，需要删除之前上传的动态库文件
+			if(ruleType.equals("Lib_Rule")){
+				String fileName =JSONObject.fromObject(jsonArray.get(Integer.valueOf(seq))).get("Lib")+".json" ;
+				File libFile = new  File(request.getServletContext().getRealPath("resources/files/uploads")+File.separator+fileName);
+				libFile.delete();
+			}
+			fileObj.put(ruleType, jsonArray);
+			basicRuleService.alterFile(newRuleFile, fileObj);
+			jsonArray.remove(seq);
+			ajax.setMessage("1");
+			ajax.setData(jsonArray.toString());
+		} catch (IOException e) {
+			ajax.setMessage("0");
+			e.printStackTrace();
+		}
+		return ajax;
+	}
+	
+	
+	
+	
+	/***
+	 * @author litao
+	 * @describe 跳转到规则展示页面
+	 * @return modelAndView
+	 */
+	@RequestMapping(value="/showRulePage")
+	public ModelAndView showRulePage(){
+		ModelAndView modelAndView = new ModelAndView("basicRules/addRule");
+		modelAndView.addObject("ruleList", JSONArray.fromObject(basicRuleService.selectAllRules()));
+		return modelAndView;
+	}
+	
+	/***
+	 * @author litao	
+	 * @decribe 根据id查询规则数据
+	 * @return
+	 */
+	@RequestMapping(value="/searchRuleById" ,method=RequestMethod.POST,produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public AjaxMessage searchRuleById(){
+		AjaxMessage ajax = new AjaxMessage();
+		//限定只有id存在或者为""的时候可以查询
+		String param = request.getParameter("param");
+		if(param.equals("")){
+			ajax.setMessage("1");
+			ajax.setData(JSONArray.fromObject(basicRuleService.selectAllRules()).toString());
+		}else{
+			if(basicRuleService.selectBySelective(param).size()>0){
+				ajax.setMessage("1");
+				ajax.setData(JSONArray.fromObject(basicRuleService.selectBySelective(param)).toString());
+			}else{
+				ajax.setMessage("0");
+			}	
+		}
+		return ajax;
 		
 	}
 	

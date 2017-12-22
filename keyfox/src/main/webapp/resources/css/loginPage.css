@@ -21,7 +21,6 @@ body{
 }
 .login h1{
     color: #fff;
-    text-shadow:0 0 10px;
     letter-spacing: 1px;
     text-align: center;
 }
@@ -37,17 +36,16 @@ input{
     padding: 10px 10px 10px 34px;
     font-size: 13px;
     color: #fff;
-    text-shadow:1px 1px 1px;
-    border-top: 1px solid #312E3D;
-    border-left: 1px solid #312E3D;
-    border-right: 1px solid #312E3D;
-    border-bottom: 1px solid #312E3D;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
     border-radius: 4px;
     background-color:transparent;
 
 }
-.input1{background: url("../img/admin.png") no-repeat 5px}
-.input2{background: url("../img/password.png") no-repeat 5px}
+.input1{background:transparent url("../img/admin.png") no-repeat 5px!important}
+.input2{background:transparent url("../img/password.png") no-repeat 5px!important}
 .but{
     width: 300px;
     min-height: 20px;

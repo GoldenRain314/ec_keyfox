@@ -25,6 +25,15 @@ var _baseUrl = "${_baseUrl }";
 <!--  树结构  -->
 <script type="text/javascript" src="${_resources}/TZ/js/jquery.ztree.core.js"></script>
 <link href='${_resources}/TZ/css/style.css' type='text/css' rel='stylesheet' />
-
+<%-- json2.js,这样ie8(兼容模式),ie7和ie6就可以支持JSON对象 
+序列化方法
+var jsonObj = { id: '01', name: 'Tom' };
+JSON.stringify(jsonObj);
+反序列化方法
+var jsonString = "{ id: '01', name: 'Tom' }";
+JSON.parse(jsonString);
+--%>
+<script src='${_resources}/TZ/js/json2.js' type='text/javascript'></script>
 <script src='${_resources}/TZ/js/echarts.js' type='text/javascript'></script>
 <script src='${_resources}/TZ/js/highcharts.js' type='text/javascript'></script>
+
